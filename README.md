@@ -170,3 +170,140 @@ odredjivanje specijalnog atributa u skupovima podataka gde je on nepoznat.
 1. rasporedjivanje artikala u prodavnici
 1. prepouke kupcima
 1. anomalije u logovima aplikacija
+
+## Sta je slicnost/razlicitost objekata/obrazaca/atributa?
+Slicnost i razlicitost izmedju objekata su funkcije koje nam govore o tome koliko su dva objekta
+slicna ili razlicita. Vece vrednosti funkcije slicnosti nam govore da su objekti vise slicni, a
+obrnuto vazi za funkcije razlicitosti.  Uglavnom se funkcije slicnosti mere u vrednostima na
+intervalu [0, 1], dok se funkcije razlicitosti mere na intervalu od 0 (objekti su isti) na vise.
+Koriste se i termini rastojanje (distance), blizina (proximity).
+
+Funkcije slicnosti i razlicitosti su od velikog znacaja, jer imaju uticaj na svaki problem u
+istrazivanju podataka. Los izbor funkcije slicnosti moze da ima presudnu vrednost u tome da li
+smo odradili dobar posao. Ova cinjenica nam govori da ne smemo zapostaviti izbor funkcije
+slicnosti i samo se fokusirati na algoritamski deo problema istrazivanja podataka.
+
+## Navesti primer funkcije slicnosti/razlicitosti za nominalne atribute *p* i *q*.
+
+#### Slicnost
+* *sim(p, q) = 1 <=> p = q*
+* *sim(p, q) = 0 <=> p =/= q*
+
+#### Razlicitost
+* *dist(p, q) = 0 <=> p = q*
+* *dist(p, q) = 1 <=> p =/= q*
+
+## Navesti primer funkcije slicnosti/razlicitosti za redne atribute *p* i *q*.
+Ako *p* i *q* mogu imati *n* razlicitih vrednosti, onda funkcije slicnosti i razlicitosti
+definisemo na sledeci nacin:
+
+#### Slicnost
+* *sim(p, q) = 1 - |p - q| / (n - 1)*
+
+#### Razlicitost
+* *|p - q| / (n - 1)*
+
+## Navesti primer funkcije slicnosti/razlicitosti za intervalne i razmerne atribute *p* i *q*.
+
+#### Slicnost
+* *sim(p, q) = -dist(p, q)*
+* *sim(p, q) = 1/ (1 + dist(p, q))*
+
+#### Razlicitost
+* *dist(p, q) = |p - q|*
+
+## Sta treba da vazi za funkciju rastojanja *d* da bi ona bila metrika?
+Da bi funkcija rastojanja *d* je metrika ako i samo ako vazi:
+1. Pozitivna odredjenost:
+  * *d(p, q) >= 0* za svako *p* i *q* 
+  * *d(p, q) = 0 <=> p = q*
+1. Simetrija
+  * *d(p, q) = d(q, p)* za svako *p* i *q*
+1. Nejednakost trougla
+  * *d(p, q) <= d(p, z) + d(z, q)* za svako *p*,*q* i *z*
+
+## Sta treba da vazi za funkciju rastojanja *d* da bi ona bila ultrametrika?
+Funkcija *d* je *ultrametrika* ako je metrika i ako vazi:
+* *d(p, q) <= max{d(p, z), d(z, q)}* za svako *p*,*q* i *z*
+
+## Koje se mere rastojanja cesto koriste za kvantitativne podatke?
+Hamingovo rastojanje, rastojanje Minkovskog, Mahalanobisovo rastojanje.
+
+## Sta je rastojanje Minkovskog (prednosti/nedostaci)?
+Za dva objekta *X=(x1,x2,...,xn)* i *Y=(y1,y2,...,yn)* Rastojanje minkovskog se definise kao:
+* *(sum\[i = 1 to n\] -> |xi - yi|^p)^(1 / p)*
+
+Rastojanje Minkovskog za *p = 2* je Euklidsko rastojanje, za *p = 1* je Menhetn rastojanje.
+Prednost ove metode je u tome sto je veoma intuitivna. Medjutim, to sto je intuitivna, ne znaci
+da daje dobre rezultate, pogotovo u slucajevima velike dimenzionalnosti. Na primer ne uzima u
+obzir koliko je neki atribut bitan za odredjivanje slicnosti. Takodje lose radi ako je nepoznata
+raspodela...
+
+
+## Sta je Mahalanobisovo rastojanje (prednosti/nedostaci)?
+Jedan od nedostataka rastojanaj Minkovskog je sto zavisi samo od objekata nad kojim se formula
+izracunava, a ne obraca paznju na distribuciju ostalih podataka. Mahalanobisovo rastojanje
+uzima u obzir raspodelu podataka koristeci matricu kovarijansi. Neka su *X=(x1,x2,...,xn)* i
+*Y=(y1,y2,...,yn)* dva objekta. Mahalanobisovo rastojanje izmedju *X* i *Y* je:
+
+* *Maha(X, Y) = sqrt((X - Y)  E^(-1)  (X - Y)^T)*
+
+Drugim recima uzimamo razliku vektora *X* i *Y* pomnozimo sa inverzom matrice kovarijani *E* i
+transponovanom razlikom vektora *X* i *Y*.
+
+## Kako se moze definisati slicnost podataka sa kategorickim atributima?
+Kad radimo sa kategorickim funkcijama obicno se vise koriste funkcije slicnosti nego
+razlicitosti jer je se diskretne vrednosti mogu prirodnije porediti.  Slicnost podataka sa
+kategorickim atributima se moze definisati preko slicnosti njihovih pojedinacnih atributa. Neka
+su *X=(x1,x2,...,xn)* i *Y=(y1,y2,...,yn)* objekti. Njihovu slicnost mozemo definisati kao:
+* *Sim(X, Y) = sum\[i = 1 to n\] S(xi, yi)*
+
+Odavde vidimo da izbor funkcije *S* odredjuje citavu funkciju slicnosti. U najjednostavnijem
+slucaju funkcija *S* se moze definisati kao 
+* *S(x_i, y_i) = 1 <=> x_i = y_i*
+* *S(x_i, y_i) = 0 <=> x_i =/= y_i*
+
+Medjutim, mozemo uvideti da je problem kod ove funkcije da ona ne uzima u obzir frekvenciju
+razlicitih atributa. Uzmimo na primer atribut koji moze da ima vrednosti 'Normalno', 'Rak' i
+'Dijabetes'. Najverovatnije je da ce 99% podataka imati vrednost 'Normalno' ali oni nece biti
+od statisticke vaznosti isto toliko koliko i objekti sa vrednostima 'Rak' i 'Dijabetes'. Drugim
+recima, velika vecina nam ne odredjuje dovoljno dobro slicnost izmedju objekata. Sa ovim na umu
+treba kreirati nesto slicno Mahalanobisovom pristupu.
+
+Pristup koji koristimo naziva se *inverzna frekvencija ponavljanja*. Neka je *p_i(x)* broj
+slogova ciji *i*-ti atribut ima vrednost *x*. Tada mozemo nasu funkciju *S* definisati kao
+* *S(x_i, y_i) = 1 / p_i(x_i)^2 <=> x_i = y_i*
+* *S(x_i, y_i) = 0 <=> x_i =/= y_i*
+
+## Kako se odredjuje slicnost tekstualnih dokumenata?
+Tekstualne dokumente mozemo smatrati multidimenzionim podacima kada bi ih posmatrali kao 'vrece
+reci'. To bi znacilo da bi kompletan set atributa nekog dokumenta bio ceo leksikon reci, a
+vrednosti bi bile broj pojavljivanja odgovarajuce reci u dokumentu. Ovakav format bi znacio da
+ce vecina atributa imati vrednost 0, sto bi dalje povlacilo da kada bismo koristili nesto kao
+sto je rastojanje Minkovskog, dva slicna dugacka teksta ce uvek biti vise razlicita nego dva
+zapravo razlicita kraca teksta. Da bismo ovo izbegli, koristimo kosinusno rastojanje. Neka su
+*X=(x1,x2,...,xn)* i *Y=(y1,y2,...,yn)* dva objekta. Kosinusno rastojanje definisemo kao:
+* cos(X, Y) = sum\[i = 1 to n\] xi * yi / (sqrt(sum\[i = 1 to n\](xi^2)) * sqrt(sum\[i = 1 to n
+\](yi^2)))
+
+## Sta je rastojanje Minkovskog sa tezinama?
+U nekim slucajevima, nisu svi atributi objekta podjednako bitni u odredjivanju slicnosti. Na
+primer, visina plate igra mnogo vecu ulogu nego pol u slucaju odobravanja kredita. U ovakvom
+slucaju mozemo koristiti rastojanje Minkovskog sa tezinama (generalizovano rastojanje
+Minkovskog).
+* (sum\[i = 1 to n\] -> ai * |xi - yi|^p)^(1 / p)
+
+Vrednost *ai* nam govori o vaznosti *i*-tog atributa u poredjenju dva objekta. Vrednosti *ai*
+se dobijaju heuristickim metodama i u velikoj meri zavise od iskustva analiticara.
+
+## Kako se odredjuje slicnost dva sloga sa kvantitativnim i kategorickim atributima?
+## Sta je SMC (simple matching coefficient)?
+## Sta su Zakardovi koeficijenti? Kada se koriste?
+## Sta su prosireni Zakardovi koeficijenti (koeficijenti Tanimoto-a)?
+## Kako se definise kosinusna slicnost dva objekta? Kada se koristi?
+## Sta je korelacija dva objekta?
+## Sta su mere na osnovu gustina?
+## Kako izrazavamo slicnost diskretnih podataka?
+## Sta je entropija?
+## Sta su mere slicnosti zasnovane na teoriji informacija?
+## Sta su mere na osnovu gustina? Koje se metode najcesce koriste?
