@@ -1,0 +1,543 @@
+% !TEX encoding = UTF-8 Unicode
+
+\documentclass[a4paper]{article}
+
+\usepackage[utf8x,utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+
+\urlstyle{same}
+
+\begin{document}
+
+\title{Istrazivanje Podataka}
+
+\author{Daniel Doža}
+
+\maketitle
+
+\section{Sta je istrazivanje podataka?}
+
+Ne postoji precizna definicija istrazivanja podataka, ali se smatra da je to skup algoritama i
+tehnika koji omogucava automatsko zakljucivanje nekih cinjenica i veza iz velikog skupa podataka,
+koji bi mozda inace ostali neotkriveni.
+
+\section{Koji su zadaci istrazivanja podataka?}
+
+Zadaci u istrazivanju podataka se mogu podeliti u dve grupe: zadaci opisivanja i zadaci
+predvidjanja. Zadaci predvidjanja bave se odredjivanjem vrednosti nekog atributa na osnovu vrednosti
+neki drugih atributa. Ove atribute nazivamo \emph{zavisne promenljive} ili \emph{ciljne promenljive}
+a atribute na osnovu kojih dolazimo do zakljucaka \emph{opisne promenljive} ili \emph{nezavisne
+promenljive}.
+
+\begin{enumerate}
+    \item \textbf{Klasifikacija} pravimo funkciju od nezavisnih varijabli da bi dobili zavisne
+        varijable
+    \begin{itemize}
+        \item klasifikacija - podatke, na primer: da li ce kupac kupiti neki artikal
+        \item regresija - za kontinualne podatke, na primer: koliko ce stepeni biti u neko vreme
+    \end{itemize}
+    \item \textbf{Prepoznavanje obrazaca} - nalazimo veze u podacima: na primer ako je kupac kupio
+        pelene, ver
+    \item \textbf{Klasterovanje} - grupisemo podatke prema slicnosti, na primer: grupisemo dokumente
+        vezane za ekonomiju u jedan klaster, a dokumente vezane za medicinu u drugi klaster.
+    \item \textbf{Otkrivanje anomalija} - otkrivanje podataka koji su veoma drugaciji od ostalih.
+        Ove podatke nazivamo anomalije ili autlajeri
+\end{enumerate}
+
+\section{Sta su podaci?}
+
+Skup podataka mozemo predstaviti kao skup \emph{objekata}. Ovi objekti se takodje mogu nazivati i
+\emph{slog}, \emph{slucaj}, \emph{uzorak}, \emph{vektor}\ldots Objekte opisuju njihovi
+\emph{atributi} koji nam govore o osobinama tog objekta, na primer: boja, visina, tezina\ldots
+Atributi se jos nazivaju i \emph{karakteristika}, \emph{varijabla}, \emph{polje}\ldots
+
+\section{Sta je atribut?}
+
+Atribut je karakteristika objekta. Atribut moze da varira izmedju razlicitih objekata ili da varira
+u vremenu. Boja ociju je razlicita za dva coveka, a na primer, temperatura nekog predmeta varira u
+toku vremena.
+
+\section{Sta je vrednost atributa?}
+
+Vrednost atributa je broj ili simbol koji je pridruzen atributu. Moramo razlikovati vrednost
+atributa od samog atributa, jer vrednosti mogu da imaju neke osobine koje atribut nema, i obrnuto.
+Na primer ako za zaposlenog cuvamo identifikacioni broj i broj godina, ima smisla racunati prosek
+godina, dok nema smisla racunati prosek identifikacionog broja. Jedina logicna operacija sa
+identifikacionim brojevima je poredjenje jednakosti.
+
+\section{Kako odredjujemo tip atributa?}
+
+Tip atributa mozemo odrediti na osnovu broja vrednosti koji moze da sadrzi:
+
+\begin{itemize}
+    \item \textbf{diskretni} (konacni, ili prebrojivo beskonacni skupovi vrednosti, primer:
+        postanski brojevi)
+    \item \textbf{neprekidni} (realni brojevi, primer: temperatura, tezina, pritisak, brzina)
+\end{itemize}
+
+\emph{Asimetricni atributi} - kod njih je bitna samo ne-nula vrednost. Na
+primer vrednost 1 ako je student pohadjao kurs, a vrednost 0 ako nije. U tom slucaju bi nas zanimali
+samo studenti sa vrednoscu 1.
+
+Takodje, tip atributa mozemo posmatrati na osnovu operacija koje se mogu izvrsiti nad njihovim
+vrednostima
+
+\begin{center}\begin{tabular}{llll}
+    \hline
+    Vrsta Operacije & Rbr & Operacija & Tip Atributa \\ \hline
+    razlicitost & 1 & \(=\) i \(\neq\)& Imenski(1) \\
+    uredjenje & 2 & \(<\), \(>\), \(\leqslant\), \(\geqslant\) & Redni(1,2) \\
+    aditivnost & 3 & \(+\), \(-\) & Intervalni(1,2,3) \\
+    multiplikativnost & 4 & \(\times\), \(\div\) & Razmerni(1,2,3,4) \\ \hline
+\end{tabular}\end{center} 
+
+\begin{itemize}
+    \item \textbf{Kategoricki} - imenski i redni
+    \item \textbf{Numericki} - intervalni i razmerni
+\end{itemize}
+
+\section{Koje su karakteristike skupa podataka?}
+
+\begin{enumerate}
+    \item dimenzionalnost - predstavlja broj atributa koje objekti imaju
+    \item retkost - uzmimo na primer asimetricne podatke, mozda razmatramo samo 1\% od ukupnog broja
+        objekata
+    \item rezolucija - sa kojim nivoom detalja gledamo na podatke. Na primer zemlja gledana sa par
+        metara je proprilicno neravna, a gledano sa par desetina kilometara je poprilicno glatka.
+\end{enumerate}
+
+\section{Koji su tipovi skupa podataka?}
+
+Tipovi podataka nisu precizno definisani, ali ih mozemo grupisati u tri grube kategorije:
+
+\begin{enumerate}
+    \item Slogovi
+    \item Grafovski podaci
+    \item Uredjeni podaci
+\end{enumerate}
+
+\section{Sta su slogovi?}
+
+Podrazumeva da su podaci organizovani kao torke koje predstavljaju objekte. Svaki objekat ima fiksan
+broj atributa. U svojoj osnovnoj formi, smatramo da ne postoje veze izmedju torki, kao ni izmedju
+atributa, i svaki objekat ima isti skup atributa.
+
+\paragraph{Transakcije}
+
+Transakcija je specijalan slucaj torki. Asocijacija se moze napraviti sa \emph{potrosackom korpom}.
+Svaka torka sadrzi skup elemenata koje je kupac kupio u jednoj kupovini.
+
+\paragraph{Matrice podataka}
+
+Ukoliko svi objekti imaju isti broj atributa, podaci se mogu posmatrati kao matrica. Redovi ove
+matrice predstavljaju objekte, a kolone predstavljaju atribute (obrnuto je takodje dozvoljeno). U
+ovakvom uredjenju, objekte mozemo posmatrati kao \(n\)-dimenizione vektore, gde su
+dimenzije odredjene atributima.
+
+\section{Sta su grafovski podaci?}
+
+\paragraph{Grafovi sa vezama izmedju podataka u granama}
+
+Objekti su u ovom modeli predstavljeni kao cvorovi grafa, dok su veze izmedju objekata prikazane
+granama. Kao primer mozemo uzeti Web stranice.
+
+\paragraph{Objekti predstavljeni kao grafovi}
+
+Ako su objekti sacinjeni od podobjekata koji imaju medjusobne veze, takve objekte cesto
+predstavljamo kao grafove. Kao primer mozemo uzeti hemijska jedinjenja, gde cvorovi predstavljaju
+atome, a grane predstavljaju hemijske veze.
+
+\section{Sa su uredjeni podaci?}
+
+Ponekad su podaci uredjeni na osnovu vremena i/ili prostora.
+
+\paragraph{Vremenski podaci}
+
+Uredjeni su kao slogovi, s tim sto je svakom slogu pridruzeno vreme. Ovim mozemo odredjivati na
+primer porast u kupovini slatkisa pred noc vestica.
+
+\paragraph{Podaci u odredjenom redosledu}
+
+Slicni su vremenskim podacima, ali nemaju vremenske odrednice, vec su poredjani u uredjenom
+rasporedu. Primer su genetske sekvence.
+
+\paragraph{Serijski podaci}
+
+Vrlo slicni vremenskim podacima, samo sto svaki objekat cini serija podataka izmerenih u toku nekog
+perioda.
+
+\paragraph{Prostorni podaci}
+
+Objekti sadrze prostorne odrednice. Primer bi bio podaci o vremenskoj prognozi.
+
+\section{Sta je prepoznavanje obrazaca?}
+
+Prepoznavanje obrazaca se moze, u osnovnoj formi predstaviti preko binarne matrice. Moze se
+posmatrati takva matrica da kolone predstavljaju artikle, a redovi transakcije kupaca. Polje
+\((i,j)\) je jednako 1 ako je kupac kupio artikal, inace je 0. Cilj nam je da prepoznamo da li postoje
+neka pravila u kupovini, tojest, da li su vece sanse da kupac kupi stvar \(x\) ako je kupio stvar
+\(y\). Formalno: neka je data binarna matrica \(n \times d\), posmatramo podskupove kolona, takve
+da sve imaju vrednost 1. Svakom tom podskupu se dodeljuje podrska \(s\), koja predstavlja
+ucestalost ponavljanja tog podskupa u odnosu na ceo skup. Ukoliko je \(s\) vece od minimalne
+podrske, smatramo da je obrazac cest.
+
+\section{Sta je podrska pravila pridruzivanja?}
+
+Neka su \(A\) i \(B\) dva skupa obrazaca. Podrska \(sup(A \implies B)\) je
+definfinisana kao \(\#(A \cup B) / N\), Gde \(\#(A \cup B)\) predstavlja broj
+zadovoljavajucih obrazaca, a \(N\) ukupan broj redova u kompletnom skupu.
+
+\section{Sta je pouzdanost pravila pridruzivanja?}
+
+Neka su A i B dva skupa obrazaca. Pouzdanost \(conf(A \implies B)\) je definisana kao
+\(\#(A \cup B) / \#(A)\).
+
+\section{Sta je klasterovanje? (gruba definicija)}
+
+Klasterovanje je grupisanje objekata na osnovu njihove `slicnosti'. Uvidja se da je od velike
+vaznosti dizajn funkcije `slicnosti'.
+
+\section{Sta je otkrivanje elemenata van granica? (gruba definicija)}
+
+Zadatak je otkriti element koji je u velikoj meri razlicit od svih ostalih. Ovaj element zovemo
+anomalija ili autlajer. Mozemo autlajere posmatrati i kao `element koji je toliko razlicit od
+ostalih, da se moze posumnjati da je nastao nekim razlicitim mehanizmom'. Primeri bi bili upad u
+racunarski sistem, zloupotreba kreditnih kartica\ldots
+
+\section{Sta je klasifikacija? (gruba definicija)}
+
+Klasifikacija je problem odredjivanja vrednosti nekog specijalnog atributa. Problem klasifikacije je
+problem nadgledanog ucenja. Formiramo skup podataka koje nazivamo  podaci za trening, na osnovu
+kojih nas algoritam odredjuje odnos ostalih atributa i specijalnog atributa koji se trazi. Nakon
+toga test podaci se koriste da se utvrdi preciznost algoritma i eventualno podese parametri u cilju
+povecanja preciznosti. Onda mozemo koristiti dobijen algoritam za odredjivanje specijalnog atributa
+u skupovima podataka gde je on nepoznat.
+
+\section{Navesti par primera istrazivanja podataka}
+
+\begin{enumerate}
+    \item rasporedjivanje artikala u prodavnici
+    \item prepouke kupcima
+    \item anomalije u logovima aplikacija
+\end{enumerate}
+
+\section{Sta je slicnost/razlicitost objekata, obrazaca i atributa?}
+
+Slicnost i razlicitost izmedju objekata su funkcije koje nam govore o tome koliko su dva objekta
+slicna ili razlicita. Vece vrednosti funkcije slicnosti nam govore da su objekti vise slicni, a
+obrnuto vazi za funkcije razlicitosti.  Uglavnom se funkcije slicnosti mere u vrednostima na
+intervalu [0, 1], dok se funkcije razlicitosti mere na intervalu od 0 (objekti su isti) na vise.
+Koriste se i termini rastojanje (distance), blizina (proximity).
+
+Funkcije slicnosti i razlicitosti su od velikog znacaja, jer imaju uticaj na svaki problem u
+istrazivanju podataka. Los izbor funkcije slicnosti moze da ima presudnu vrednost u tome da li smo
+odradili dobar posao. Ova cinjenica nam govori da ne smemo zapostaviti izbor funkcije slicnosti i
+samo se fokusirati na algoritamski deo problema istrazivanja podataka.
+
+\section{Navesti primer funkcije slicnosti/razlicitosti za nominalne atribute \(p\) i \(q\).}
+
+\begin{itemize}
+\item \textbf{Slicnost}
+
+\[sim(p, q) = 1 \iff p = q\]
+\[sim(p, q) = 0 \iff p \neq q\]
+
+\item \textbf{Razlicitost}
+
+\[dist(p, q) = 0 \iff p = q\]
+\[dist(p, q) = 1 \iff p \neq q\]
+
+\end{itemize}
+
+\section{Navesti primer funkcije slicnosti/razlicitosti za redne atribute \(p\) i \(q\)}.
+
+Ako \(p\) i \(q\) mogu imati \(n\) razlicitih vrednosti, onda funkcije slicnosti i
+razlicitosti definisemo na sledeci nacin:
+
+\begin{itemize}
+\item \textbf{Slicnost}
+
+\[sim(p, q) = 1 - \dfrac{|p - q|}{n - 1}\]
+
+\item \textbf{Razlicitost}
+
+\[dist(p, q) = \dfrac{|p - q|}{n - 1}\]
+\end{itemize}
+
+\section{Navesti primer funkcije slicnosti/razlicitosti za intervalne i razmerne atribute \(p\) i
+\(q\).}
+
+\begin{itemize}
+\item \textbf{Slicnost}
+
+\[sim(p, q) = -dist(p,q)\]
+\[sim(p, q) = \dfrac{1}{1 + dist(p, q)}\]
+
+\item \textbf{Razlicitost}
+
+\[dist(p, q) = |p - q|\]
+\end{itemize}
+
+\section{Sta treba da vazi za funkciju rastojanja \(d\) da bi ona bila metrika?}
+
+Da bi funkcija rastojanja \(d\) je metrika ako i samo ako vazi:
+
+\begin{enumerate}
+    \item Pozitivna odredjenost
+        \[d(p, q) \geq 0, \forall p, q\]
+        \[d(p, q) = 0, \iff p = q\]
+    \item Simetrija
+        \[d(p, q) = d(q, p)\]
+    \item Nejednakost trougla
+        \[d(p, q) \leq d(p, r) + d(r, q)\]
+\end{enumerate}
+
+\section{Sta treba da vazi za funkciju rastojanja \(d\) da bi ona bila ultrametrika?}
+
+Funkcija \(d\) je \emph{ultrametrika} ako je metrika i ako vazi:
+
+\[d(p, q) \leq max\{d(p, z), d(z, q)\}, \forall p, q, z\]
+
+\section{Koje se mere rastojanja cesto koriste za kvantitativne podatke?}
+
+Hamingovo rastojanje, rastojanje Minkovskog, Mahalanobisovo rastojanje.
+
+\section{Sta je rastojanje Minkovskog (prednosti/nedostaci)?}
+
+Za dva objekta \(\overline{X}=(x_1,x_2,\ldots,x_n)\) i \(\overline{Y}=(y_1,y_2,\ldots,y_n)\)
+Rastojanje minkovskog se definise kao:
+
+\[\sum_{i=1}^{n} {({|x_i - y_i|}^p)}^{1/p}\]
+
+Rastojanje Minkovskog za \(p = 2\) je Euklidsko rastojanje, za \(p = 1\) je Menhetn
+rastojanje. Prednost ove metode je u tome sto je veoma intuitivna. Medjutim, to sto je intuitivna,
+ne znaci da daje dobre rezultate, pogotovo u slucajevima velike dimenzionalnosti. Na primer ne uzima
+u obzir koliko je neki atribut bitan za odredjivanje slicnosti. Takodje lose radi ako je nepoznata
+raspodela\ldots
+
+\section{Sta je Mahalanobisovo rastojanje (prednosti/nedostaci)?}
+
+Jedan od nedostataka rastojanaj Minkovskog je sto zavisi samo od objekata nad kojim se formula
+izracunava, a ne obraca paznju na distribuciju ostalih podataka. Mahalanobisovo rastojanje uzima u
+obzir raspodelu podataka koristeci matricu kovarijansi. Neka su
+\(\overline{X}=(x_1,x_2,\ldots,x_n)\) i \(\overline{Y}=(y_1,y_2,\ldots,y_n)\) dva objekta.
+Mahalanobisovo rastojanje izmedju \(\overline{X}\) i \(\overline{Y}\) je:
+
+\[
+    Maha(\overline{X}, \overline{Y}) =
+    \sqrt{
+        (\overline{X} - \overline{Y}) \times \Sigma^{-1} \times (\overline{X} - \overline{Y})^{T}
+    }
+\]
+
+Drugim recima uzimamo razliku vektora \(\overline{X}\) i \(\overline{Y}\) pomnozimo sa inverzom
+matrice kovarijansi \(\Sigma\) i transponovanom razlikom vektora \(\overline{X}\) i \(\overline{Y}\).
+
+\section{Kako se moze definisati slicnost podataka sa kategorickim atributima?}
+
+Kad radimo sa kategorickim funkcijama obicno se vise koriste funkcije slicnosti nego razlicitosti
+jer je se diskretne vrednosti mogu prirodnije porediti.  Slicnost podataka sa kategorickim
+atributima se moze definisati preko slicnosti njihovih pojedinacnih atributa. Neka su
+\(\overline{X}=(x_1,x_2,\ldots,x_n)\) i \(\overline{Y}=(y_1,y_2,\ldots,y_n)\) objekti. Njihovu
+slicnost mozemo definisati kao:
+
+\[
+    Sim(\overline{X}, \overline{Y}) = \sum_{i = 1}^{n} S(x_i, y_i)
+\]
+
+
+Odavde vidimo da izbor funkcije \(S\) odredjuje citavu funkciju slicnosti. U najjednostavnijem
+slucaju funkcija \(S\) se moze definisati kao
+
+\[
+    S(x_i, y_i) =
+    \begin{cases}
+        1 & x_i = y_i \\
+        0 & x_i \neq y_i \\
+    \end{cases}
+\]
+
+Medjutim, mozemo uvideti da je problem kod ove funkcije da ona ne uzima u obzir frekvenciju
+razlicitih atributa. Uzmimo na primer atribut koji moze da ima vrednosti `Normalno', `Rak' i
+`Dijabetes'. Najverovatnije je da ce 99\% podataka imati vrednost `Normalno' ali oni nece biti od
+statisticke vaznosti isto toliko koliko i objekti sa vrednostima `Rak' i `Dijabetes'. Drugim recima,
+velika vecina nam ne odredjuje dovoljno dobro slicnost izmedju objekata. Sa ovim na umu treba
+kreirati nesto slicno Mahalanobisovom pristupu. Takav pristup naziva se \emph{inverzna frekvencija
+ponavljanja}.
+
+ Neka je \(p_i(x)\) broj slogova ciji \(i\)-ti atribut ima vrednost \(x\). Tada mozemo nasu funkciju
+ \(S\) definisati kao:
+
+ \[
+    S(x_i, y_i) =
+    \begin{cases}
+        \dfrac{1}{p_i(x_i)^2} & x_i = y_i \\
+        0 & x_i \neq y_i \\
+    \end{cases}
+ \]
+
+\section{Kako se odredjuje slicnost tekstualnih dokumenata?}
+\label{pitanje:slicnost_tekst_dokumenata}
+
+Tekstualne dokumente mozemo smatrati multidimenzionim podacima kada bi ih posmatrali kao `vrece
+reci'. To bi znacilo da bi kompletan set atributa nekog dokumenta bio ceo leksikon reci, a vrednosti
+bi bile broj pojavljivanja odgovarajuce reci u dokumentu. Ovakav format bi znacio da ce vecina
+atributa imati vrednost 0, sto bi dalje povlacilo da kada bismo koristili nesto kao sto je
+rastojanje Minkovskog, dva slicna dugacka teksta ce uvek biti vise razlicita nego dva zapravo
+razlicita kraca teksta. Da bismo ovo izbegli, koristimo kosinusno rastojanje. Neka su
+\(\overline{X}=(x_1,x_2,\ldots,x_n)\) i \(\overline{Y}=(y_1,y_2,\ldots,y_n)\) objekti. Kosinusno
+rastojanje definisemo kao:
+
+\[
+    \cos(\overline{X}, \overline{Y}) =
+    \dfrac{\sum_{i=1}^{n} x_i \cdot y_i}{\sqrt{\sum_{i=1}^{n} x_i^2} \cdot \sqrt{\sum_{i=1}^{n} y_i^2}}
+\]
+
+Ova metoda ne uzima u obzir odnos pojavljivanja reci. Mi znamo da su tekstovi slicniji ukoliko se
+podudaraju na recima koje se retko javljaju, nego na onim koje se cesto javljaju. \emph{Inverznu
+frekvenciju dokumenta} definisemo kao:
+\[id_i = \log(n/n_i)\]
+gde je \(n\) ukupan broj dokumenata, a \(n_i\) je broj dokumenata u kojima se \(i\)-ta rec
+pojavljuje.
+
+Kako pojavljivanje jedne reci ne bi trebalo da poremeti celu meru, koristimo funkcije:
+
+\[f(x_i) = \sqrt{x_i}\]
+\[f(x_i) = \log(x_i)\]
+
+\emph{Normalizovane} funkcije frekvencije reci se onda definisu kao
+
+\[h(x_i) = f(x_i) \cdot id_i\]
+
+Sada mozemo napisati kosinusnu meru slicnosti koristeci ove normalizovane funkcije frekvencije
+ponavljanja reci
+
+\[
+    \cos(\overline{X}, \overline{Y}) =
+    \dfrac{\sum_{i=1}^{n} h(x_i) \cdot h(y_i)}{\sqrt{\sum_{i=1}^{n} h(x_i)^2} \cdot
+        \sqrt{\sum_{i=1}^{n} h(y_i)^2}}
+\]
+
+
+\section{Sta je rastojanje Minkovskog sa tezinama?}
+
+U nekim slucajevima, nisu svi atributi objekta podjednako bitni u odredjivanju slicnosti. Na primer,
+visina plate igra mnogo vecu ulogu nego pol u slucaju odobravanja kredita. U ovakvom slucaju mozemo
+koristiti rastojanje Minkovskog sa tezinama (generalizovano rastojanje Minkovskog).
+
+\[
+    Sim(\overline{X}, \overline{Y}) = \left(\sum_{i=1}^{n} a_i \cdot |x_i - y_i|^p\right)^{1/p}
+\]
+
+Vrednost \(a_i\) nam govori o vaznosti \(i\)-tog atributa u poredjenju dva
+objekta. Vrednosti \(a_i\) se dobijaju heuristickim metodama i u velikoj meri zavise od iskustva
+analiticara.
+
+\section{Kako se odredjuje slicnost dva sloga sa kvantitativnim i kategorickim atributima?}
+
+Poprilicno jednostavan pristup resavanju ovog problema je da dodamo tezine dobijene za numericke
+parametre i tezine dobijene za kategoricke parametre. Neka su
+\(\overline{X}=(\overline{X_n}, \overline{X_c})\) i \(\overline{Y}=(\overline{Y_n}, \overline{Y_c})\)
+objekti koji sadrze numericke i kategoricke atribute.
+
+\[
+    Sim(\overline{X}, \overline{Y}) =
+        \lambda \cdot NumSim(\overline{X_n}, \overline{Y_n})
+        + (1 - \lambda) \cdot CatSim(\overline{X_c}, \overline{Y_c})
+\]
+
+Ovde \(\lambda\) oznacava bitnost kategorickog i numerickog dela u izracunavanju slicnosti. Izbor
+\(\lambda\) je tezak, pogotovo sa ogranicenim poznavanjem domena podataka. Generalno se uzima udeo
+numerckih atributa u ukupnom skupu atributa, mada ovo ne znaci da je to dobar izbor.
+
+\section{Sta je SMC (simple matching coefficient)?}
+SMC (jednostavno uparivanje koeficijenata) se koristi za objekte sa binarnim atributima. Neka su
+\(\overline{X}=(x_1,x_2,\ldots,x_n)\) i \(\overline{Y}=(y_1,y_2,\ldots,y_n)\) objekti sa binarnim
+atributima. Definisemo
+\begin{itemize}
+    \item \(M_{01}\) --- broj atributa koji su jednaki 0 u \(\overline{X}\) i 1 u \(\overline{Y}\)
+    \item \(M_{10}\) --- broj atributa koji su jednaki 1 u \(\overline{X}\) i 0 u \(\overline{Y}\)
+    \item \(M_{11}\) --- broj atributa koji su jednaki 1 u \(\overline{X}\) i 1 u \(\overline{Y}\)
+    \item \(M_{00}\) --- broj atributa koji su jednaki 0 u \(\overline{X}\) i 0 u \(\overline{Y}\)
+\end{itemize}
+Tada je
+\[SMC(\overline{X}, \overline{Y}) = \dfrac{M_{11} + M_{00}}{M_{00} + M_{11} + M_{10} + M_{01}} \]
+
+\section{Sta su Zakardovi koeficijenti? Kada se koriste?}
+Zakardovi koeficijenti se koriste u slucaju objekata sa asimetricnim binarnim atributima. Definise
+se kao kolicnik broja parova gde su obe vrednosti ne-nula i broja parova gde nisu obe vrednosti
+nula. Neka su \(\overline{X}=(x_1,x_2,\ldots,x_n)\) i \(\overline{Y}=(y_1,y_2,\ldots,y_n)\) objekti
+sa asimetricnim binarnim atributima. Definisemo
+\begin{itemize}
+    \item \(M_{01}\) --- broj atributa koji su jednaki 0 u \(\overline{X}\) i 1 u \(\overline{Y}\)
+    \item \(M_{10}\) --- broj atributa koji su jednaki 1 u \(\overline{X}\) i 0 u \(\overline{Y}\)
+    \item \(M_{11}\) --- broj atributa koji su jednaki 1 u \(\overline{X}\) i 1 u \(\overline{Y}\)
+    \item \(M_{00}\) --- broj atributa koji su jednaki 0 u \(\overline{X}\) i 0 u \(\overline{Y}\)
+\end{itemize}
+Tada zakardove koeficijente izracunavamo
+\[Jacc(\overline{X}, \overline{Y}) = \dfrac{M_{11}}{M_{11} + M_{10} + M_{01}}\]
+
+\section{Sta su prosireni Zakardovi koeficijenti (koeficijenti Tanimoto-a)?}
+\emph{Prosireni Zakardovi koeficijenti} se koriste u slucaju kada atributi nisu binarni, ali se
+svodi na slucaj \emph{Zakardovih koeficijenata} ukoliko jesu.
+\[
+    ExtJacc(\overline{X},\overline{Y}) =
+    \dfrac{
+        \overline{X} \bullet \overline{Y}
+    }{
+        ||\overline{Y}||^2 + ||\overline{Y}||^2
+        - \overline{X} \bullet \overline{Y}
+    }
+\]
+
+\section{Kako se definise kosinusna slicnost dva objekta? Kada se koristi?}
+
+Pitanje~[\ref{pitanje:slicnost_tekst_dokumenata}]
+
+\section{Sta je korelacija dva objekta?}
+Korelacija izmedju dva objekta koji imaju binarne ili neprekidne atribute je mera linearne
+zavisnosti izmedju tih atributa.
+\[
+    \rho_{xy} = \dfrac{cov_{xy}}{\sigma_x \cdot \sigma_y}
+\]
+Kovarijansa
+\[
+    cov_{xy} = \dfrac{1}{n-1}\sum_{i=1}^{n} (x_i - \overline{x})(y_i - \overline{y})
+\]
+Standardna devijacija
+\[
+    \sigma_x = \sqrt{\dfrac{1}{n-1}\sum_{i=1}^{n} (x_i - \overline{x})^2}
+\]
+Srednja vrednost
+\[
+    \overline{x} = \dfrac{1}{n}\sum_{i=1}^{n} x_i
+\]
+
+Korelacija je uvek u intervalu \([-1,1]\). Korelaciju vrednosti 1 zovemo perfektna pozitivna
+korelacija. Slicno je za negativnu perfektnu korelaciju.
+
+
+\section{Kako izrazavamo slicnost diskretnih podataka?}
+
+\section{Sta je entropija?}
+Entropija dogadjaja \(X\) je
+\[
+    H(X) = - \sum_{i=1}^{n-1}p_i\log_{2}p_i
+\]
+Broj \(n\) obelezava broj razlicitih klasa podataka koje razmatramo, a \(p_i\) je broj slogova
+koji pripadaju klasi \(i\).
+
+\section{Sta su mere na osnovu gustina? Koje se metode najcesce koriste?}
+
+\end{document}
+
