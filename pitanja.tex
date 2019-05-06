@@ -2,12 +2,13 @@
 
 \documentclass[a4paper]{article}
 
+\usepackage{float}
+\restylefloat{table}
 \usepackage[utf8x,utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{hyperref}
-
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
@@ -575,5 +576,160 @@ broja tacaka u celijama.
 
 Jos jedan primer bi mogao biti udaljenost od neke centralne tacke.
 
-\end{document}
+\section{Sta je priprema podataka? Zasto se vrsi?}
+Ravni podaci su uglavnom veoma razliciti jedni od drugih. Podaci mogu da fale, da budu
+nekonzistentni, pogresni itd\ldots Cilj je podatke dovesti u takvo stanje da se na njih mogu
+primeniti razliciti pristupi istrazivanja podataka. Drugim recima, cilj name je da izvucemo sve
+korisne informacije iz ovih izvora podataka. Neki od pristupa koji se koriste su
+\begin{itemize}
+    \item Izdvajanje karakteristika
+    \item Ciscenje podataka
+    \item Izbor i transformacija podataka
+    \item Redukcija podataka
+\end{itemize}
 
+\section{Sta je izdvajanje karakteristika?}
+Ravni podaci su cesto u formi koji nisu dobri za procesiranje. Uzmimo za primer logove aplikacije,
+dokumente itd\ldots Cilj nam je da iz ovakvih nestruktuiranih podataka, izvucemo osobine sa kojima
+mozemo da radimo, i koje ce nam pomoci u resavanju konkretnog zadatka istrazivanja podataka. Ovo
+se moze smatrati i najbitnijim delom celog procesa istrazivanja podataka, jer analiza podataka moze
+biti samo onoliko dobra koliko su i podaci dobri.
+
+
+\section{Sta je prenosivost tipova podataka?}
+Osobina podataka uglavnom jeste da su heterogeni. To znaci da objekti imaju atribute razlicitih
+tipova. Ovo umnogome ogranicava izbor postojeceg algoritma za obradu podataka. Zbog ovoga postoji
+koncept prenosivosti tipova. Naravno, pretvaranjem jednog tipa u drugi, moguce je izgubiti neke
+informacije o podacima. Zbog ovoga treba biti pazljiv prilikom primene metoda za prevodjenje tipova.
+Neke od popularnih metoda su
+
+\begin{itemize}
+    \item Diskretizacija
+    \item Binarizacija
+    \item Latentna Semnticka Analiza (LSA)
+    \item Simbolicka aproksimacija agregata (SAX)
+    \item Diskretna Furijeova Transformacija (DFT)
+    \item Diskretna Transformacija Talasicima (DWT)
+\end{itemize}
+
+\begin{table}[H]
+    \centering
+    \caption{Tablela prevodjenja tipova}
+    \begin{tabular}{||c|c|c||}
+        \hline
+        \textbf{Izvorni tip} & \textbf{Ciljni tip} & \textbf{Metode} \\ \hline \hline
+        Numericki & Kategoricki & Diskretizacija \\ \hline
+        Kategoricki & Numericki & Binarizacija \\ \hline 
+        Tekst & Numericki & LSA \\ \hline
+        Vremenski intervali & Diskretne niske & SAX \\ \hline
+        Diskretne niske & Numericki multidimenzioni & DWT, DFT \\ \hline
+        Vremenski intervali & Numericki multidimenzioni & DWT, DFT \\ \hline \hline
+    \end{tabular}
+\end{table} 
+
+\section{Sta je diskretizacija? Kada se koristi? Kako se biraju intervali?}
+Najcesce transformisemo podatke iz numerickih u kategoricke. Ovaj proces nazivamo
+\emph{diskretizacija}. Osnovni pristup je da numericke podatke podelimo u intervale, svakom
+intervalu pridruzimo jednu diskretnu vrednost i onda atribute sa numerickom vrednoscu iz nekog
+intervala prevedemo u odgovarajucu kategoricku vrednost za taj interval. Na primer godine podelimo
+na \([1, 10]\), \([11, 20]\), \([21, 30]\) i intervale preslikamo u diskretne vrednosti, na primer,
+\(A\), \(B\), \(C\) onda ce simbolicka vrednost svakog objekta sa godinama u intervalu \([1, 10]\)
+biti \(A\)\ldots Posto se podaci u jednom intervalu ne razlikuju, diskretizacijom gubimo informacije
+ali se ispostavlja da ovaj gubitak nije od presudnog znacaja za analizu podataka. Nabrojacemo
+nekoliko nacina biranja intervala.
+\begin{enumerate}
+    \item \emph{Jednake sirine intervala} --- Interval podelimo na \(n\) delova jednake duzine.
+        Svaki interval \([a, b]\) se bira tako da je \(b - a\) jednako za svaki interval. Ovaj
+        pristup nije dobar, ukoliko raspodela vrednosti atributa nije uniformna.
+    \item \emph{Jednaki logaritmi sirine intervala} --- Svaki interval \([a, b]\) se deli na nacin
+        da je \(\log(b) - \log(a)\) jednako za svaki interval. Ovaj pristup ima efekat da se
+        intervali geometrijski sire \([a, a \cdot \lambda]\),
+        \([a\cdot \lambda, a \cdot \lambda^2]\), i tako dalje za \(\lambda > 1\)
+    \item \label{podela_intervala:jednak_br_el} \emph{Jednak broj elemenata u intervalu} --- Ideja
+        je da se intervali odrede tako da svaki interval sadrzi jednak broj objekata. Ovo se moze
+        postici sortiranjem vrednosti atributa, i onda odredjivanjem tacaka podele nad sortiranim
+        nizom.
+\end{enumerate}
+
+\section{Sta je binarizacija? Kada se koristi?}
+\emph{}Binarizacija je postupak transformacije kategorickih podataka u numericke radi lakse primene
+nekih algoritama. Ako kategoricki atribut ima \(n\) razlicitih vrednosti, onda kreiramo \(n\)
+binarnih atributa. Svaki binarni atribut odgovara jednom kategorickom. Dakle, samo jedan binarni
+atribut ce imati vrednost 1. Binarizacija se obicno primenjuje na atribute u analizi zasnovanoj na
+pravilima
+pridruzivanja.
+
+\section{Kako se tekstualni podaci prevode u numericke?}
+Iako vektorska reprezentacija teksta moze da se posmatra kao redak vektor ogromne dimenzionalnosti,
+ovaj pristup nije najbolji. Uglavnom za ovakav format je bolje koristiti, na primer, kosinusnu
+slicnost, nego Euklidsko rastojanje. U svakom slucaju, bilo bi dobro kada bismo mogli da koristimo
+algortme koji rade sa numerickim podacima.
+
+Prvi korak u transformisanju je koriscenje \emph{latentne semanticke analize (LSA)} kako bismo tekst
+pretvorili u vektor koji nije redak i ima nizu dimenzionalnost. Nakon toga, svaki dokument
+\(\overline{X} = (x_1, \ldots, x_n)\) mora biti skaliran na
+\(\dfrac{1}{\sqrt{\sum_{i=1}^{n}x_i^2}}(x_1, \ldots, x_n)\). Ovo skaliranje je neophodno da bi
+osiguralo da se dokumenti razlicitih duzina tretiraju na uniforman nacin. Nakon ovog skaliranja,
+mere poput Euklidskog rastojanja su efektivnije.
+
+\section{Kako se podaci iz vremenskih serija prevode u diskretne niske?}
+Vremenske serije se mogu prevesti u diskretne niske pomocu \emph{simbolicke aproksimacije agregata
+(SAX)}. Ova metoda se sastoji iz dva koraka
+\begin{enumerate}
+    \item Podelimo vremensku seriju na \(x\) jednakih delova, pa onda za svaki deo izracunamo
+        prosecno vreme.
+    \item U ovom koraku diskretizujemo vrednosti pomocu podele
+        intervala~\ref{podela_intervala:jednak_br_el}. Umesto da sortiramo elemente vremenske serije
+        pretpostavljamo da vrednosti u vremenskim serjiama imaju normalnu (Gausovu) raspodelu.
+        Koristeci standardnu devijaciju i srednju vrednost, odredjujemo parametre raspodele. Kao
+        granice intervala za diskretizaciju uzimamo kvantile ove raspodele (uglavnom 3 do 10). Ovim
+        smo napravili simbolicku reprezentaciju vremenske serije, koja je sad zapravo diskretna
+        niska.
+\end{enumerate}
+
+\section{Kako se diskretne niske prevode u numericke podatke?}
+Transformacija se vrsi u dva koraka
+\begin{enumerate}
+    \item Za svaki simbol iz diskretne sekvence se kreira jedan red binarnih vrednosti, duzine
+        originalne sekvence, gde broj 1 nalazi na svakom mestu na kome se taj simbol nalazi u
+        originalnoj sekvenci. Primer:
+        \begin{table}[H]
+            \centering
+            \begin{tabular}{ccccc}
+                \hline
+                A & B & B & A & C \\ \hline
+                1 & 0 & 0 & 1 & 0 \\
+                0 & 1 & 1 & 0 & 0 \\
+                0 & 0 & 0 & 0 & 1 \\
+            \end{tabular}
+        \end{table} 
+    \item U ovom koraku se na dobijenu vrednost primenjuje transformacija talasicima, i na kraju se
+        osobine iz razlicitih serija spajaju kako bi se dobio jedan multidimenzioni slog.
+\end{enumerate}
+
+\section{Koji su aspekti ciscenja podataka?}
+Razni faktori mogu da uticu na to da imamo nepotpune ili nekorektne podatke. Na primer, ljudi ne
+zele da daju podatke iz privatnih razloga, ako su u pitanju senzori, moze se desiti da se desi
+problem u prenosu podataka, mogu biti u pitanju ljudske greske pri rucnom unosu podataka\ldots Zbog
+ovoga je ciscenje podataka neophodno. Aspekti ciscenja podataka su:
+\begin{enumerate}
+    \item Rad sa nedostajucim podacima
+    \item Rad sa nekorektnim podacima
+    \item Rad sa dupliranim podacima
+    \item Skaliranje i normalizacija
+\end{enumerate}
+
+\section{Sta podrazumeva rad sa nedostajucim podacima?}
+\section{Sta podrazumeva rad sa nekorektnim podacima?}
+\section{Sta podrazumeva rad sa dupliranim podacima?}
+\section{Sta je skaliranje? Sta je normalizacija? Zasto se ove operacije primenjuju na podatke?}
+\section{Zasto se podaci redukuju i transformisu? Nabrojati pristupe.}
+\section{Sta je agregacija? Koja je svrha agregacije?}
+\section{Sta je uzimanje uzoraka? Koji su tipovi uzoraka?}
+\section{Sta je izbor karakteristika?}
+\section{Kako se podaci redukuju pomocu rotacije osa?}
+\section{Sta je Principal Component Analysis (PCA)?}
+\section{Sta je Singular Value Decomposition?}
+\section{Navesti jos neke metode dimenzione redukcije?}
+
+\end{document}
