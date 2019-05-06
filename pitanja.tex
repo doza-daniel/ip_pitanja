@@ -720,16 +720,134 @@ ovoga je ciscenje podataka neophodno. Aspekti ciscenja podataka su:
 \end{enumerate}
 
 \section{Sta podrazumeva rad sa nedostajucim podacima?}
+Nedostajuci podaci su cesti u bazama podataka gde metod sakupljanja podataka nije savrsen, Na primer
+cesto se desava da na anketama ne budu odgovorena sva pitanja. Tri skupa tehnika se koristi kako bi
+se prevazisao problem nedostajucih podataka:
+\begin{enumerate}
+    \item Ako nekom objektu nedostaje podataak, brisemo ga. Ovaj pristup nije toliko dobar ako su
+        objekti sa nedostajucim vrednostima cesti
+    \item Nedostajuce vrednosti se mogu pretpostaviti \emph{(imputacija)}. Imputacija, doduse, moze
+        da utice na rezultate istrazivanja podataka.
+    \item Algoritmi se modifikuju tako da mogu da podnesu nedostajuce vrednosti.
+\end{enumerate}
+Problem predvidjanja nedostajucih vrednosti je direktno vezan sa problemom klasifikacije, s tim sto
+problem klasifikacije se bavi odredjivanjem jednog specijalnog atributa na osnovu ostalih, dok u
+ovom slucaju vise vrednosti moze nedostajati, pa je time problem slozeniji.
+
 \section{Sta podrazumeva rad sa nekorektnim podacima?}
+Kljucne metode za otklanjane ili korekciju nekorektnih vrednosti su:
+\begin{enumerate}
+    \item \emph{Detekcija nekonzistentnosti} --- uglavnom je greska vidljiva u koliko imamo vise
+        izvora podataka gde su podaci koji se odnose na istu vrednost razliciti.
+    \item \emph{Domensko znanje} --- na primer, mozemo da znamo da ako polje vezano za drzavu ima
+        vrednost `Srbija', polje glavni grad ne moze biti `London'.
+    \item \emph{Metode orijentisane podacima} --- statisticko ponasanje podataka se moze iskoristi u
+        pronalazenju autlajera. Treba obratiti paznju da ne mora uvek da znaci da su ove vrednosti
+        anomalije, te se moraju rucno ispitati pa tek onda potencijalno odbaciti.
+\end{enumerate}
+
+
 \section{Sta podrazumeva rad sa dupliranim podacima?}
-\section{Sta je skaliranje? Sta je normalizacija? Zasto se ove operacije primenjuju na podatke?}
+\section{Kada se i kako primenjuju skaliranje i normalizacija?}
+I mnogo slucajeva, razliciti osobine su razlicito skalirane. Na primer broj godina i visina plate.
+Visina plate je mnogo veca od broja godina, sto bi znacilo da bi rezultati primene bilo kog metoda
+agregiranja podataka bili odredjeni vecinom od strane atributa sa vecim vrednostima.
+
+Da bismo resili ovaj problem primenjujemo \emph{standardizaciju}. Neka \(j\)-ti atribut ima srednju
+vrednost \(\mu_j\) i standardnu devijaciju \(\sigma_j\) i neka je \(\overline{X_i}\) \(i\)-ti slog.
+Atribut \(x_{ij}\) mozemo skalirati kao:
+\[
+    z_{ij} = \dfrac{x_{ij} - \mu_j}{\sigma_j}
+\]
+
+Drugi pristup je da koristimo \emph{min, maks} skaliranje, kako bismo sveli atribute na vrednosti u
+intervalu \([0, 1]\). Neka je \(\overline{X_i}\) \(i\)-ti slog i neka su \(min_j\) i \(max_j\) redom
+minimalna i maksimalna \(j\)-og atributa. Atribut \(x_{ij}\) mozemo skalirati kao:
+\[
+    z_{ij} = \dfrac{x_{ij} - \min_j}{max_j - min_j}
+\]
+Ovaj pristup nije efektivan ukoliko su minimum i maksimum neki ekstremni autlajeri. Zamislimo
+situaciju gde se greskom na broj godina dodala jos jedna nula, pa imamo maksimalni broj godina 800.
+Ovo bi znacilo da ce se svi podaci nalaziti u intervalu \([0, 0.1]\)
+
+
 \section{Zasto se podaci redukuju i transformisu? Nabrojati pristupe.}
+Cilj smanjenja podataka je da se oni predstave kompaktnije. Kada je velicina podataka manja mnogo je
+lakse primeniti algoritme na njih, pogotovo oni vece slozenosti. Redukcija podataka se moze vrsiti
+na nivou slogova kao i na nivou atributa. Neke od metoda redukcije podataka su:
+\begin{enumerate}
+    \item Agregacija
+    \item Uzimanje uzoraka
+    \item Izbor karakteristika
+    \item Redukcija podataka pomocu rotacije osa
+    \item \ldots
+\end{enumerate}
+
 \section{Sta je agregacija? Koja je svrha agregacije?}
+Agregacija je kombinovanje dva ili vise atributa (ili objekata) u jedan atribut (objekat). Svrha
+agregacije je redukcija podataka (smanjivanje broja atributa ili objekata), promena skale,
+stabilniji podaci (podaci koji su agregirani imaju tendenciju da imaju manja odstupanja)
+
 \section{Sta je uzimanje uzoraka? Koji su tipovi uzoraka?}
+Uzimanje uzoraka je `filtriranje' originalnih slogova u cilju kreiranja manje baze podataka.
+Statisticari biraju uzorke jer je dobijanje kompletnog skupa podataka koji su od interesa jako skupo
+i vremenski zahtevno. Izbor uzoraka se koristi kada je obrada kompletnog skupa podataka jako skupa
+i/ili vremenski zahtevna.  Glavna prednost uzimanja uzoraka je sto je jednostavno, intuitivno i
+relativno lako se implementira.
+
+Kljucni principi za efektivan izbor uzoraka je da koriscenjem uzoraka treba da se dobije efekat
+skoro isti kao da je radjeno na kompletnom skupu podataka. Uzorak je reprezentativan ako ima
+proksimativno iste osobine kao i originalni skup podataka.
+
+Generalno, razlikujemo dva razlicita slucaja pri uzimanju uzorka.
+\begin{enumerate}
+    \item Uzimanje uzoraka nad statickim podacima
+    \item Uzimanje uzoraka nad tokom podataka
+\end{enumerate}
+
+\paragraph{Uzimanje uzoraka nad statickim podacima} se moze izvrsiti na vise nacina:
+\begin{enumerate}
+    \item \emph{Jednostavan slucajni uzorak } --- uzimamo elemente slucajnim izborom iz originalnog skupa
+        podataka. Mozemo svaki element birati sa nekom sansom i time spreciti pojavu duplikata (osim
+        u slucaju kada originalni skup podataka sadrzi duplikate), a mozemo svaki put birati iz
+        celog skupa podataka i time ostaviti mogucnost pojave duplikata
+    \item \emph{Pristrasno uzimanje uzoraka} --- neki podaci su vazniji od drugih, na primer podaci
+        koji su skorije skupljeni imaju vece sanse da budu ukljuceni u uzorak.
+    \item \emph{Stratifikovano uzimanje uzorka} --- podaci se dele na slojeve i iz svakog sloja se
+        bira jednostavan slucajni uzorak. Ovaj pristup se koristi u situacijama kao sto su na primer
+        kada pokusavamo da izmerimo ekonomske razlike zivota razlicitih pojedinaca neke populacije.
+        Cak ni uzorak od milion ljudi mozda nece obuhvatiti nekog milionera. Zato se podaci
+        raslojavaju po zaradi, i onda se svaki sloj nezavisno obradjuje.
+\end{enumerate}
+
+\paragraph{Uzimanje uzoraka nad tokom podataka} nekada podaci nad kojima moramo da uzmemo uzorak
+nisu poznati u celosti jer su ogromnih razmera i ne mogu da stanu na disk. Dakle, moramo koristiti
+neku metodu koja ce dinamicki i efikasno \emph{odrzavati} uzorak. To se svodi na dve odluke
+\begin{enumerate}
+    \item Kako odluciti da li prispeli objekat iz toka staviti u uzorak.
+    \item Kako odluciti koji element iz trenutnog uzorka izbaciti kako bismo `napravili mesta' za
+        novi objekat.
+\end{enumerate}
+
 \section{Sta je izbor karakteristika?}
+Neke atribute mozemo jednostavno odbaciti zato sto nisu od vaznosti. Koji to atributi nisu od
+vaznosti? To ocigledno zavisi od toga sta zelimo da postignemo analizom. Izbor karakteristika
+takodje smanjuje broj redudantnih karakteristika (na primer broj poena i ocena) kao i dimenzionalnost
+podataka. Veliki broj tehnika postoji, pogotovu za klasifikaciju.
+
+Atributi ne moraju samo da se eliminisu. Cesto se formiraju novi atributi koji ukljucuju vazne
+karakteristike zbog efikasnije obrade.
+
 \section{Kako se podaci redukuju pomocu rotacije osa?}
+TBD
+
 \section{Sta je Principal Component Analysis (PCA)?}
+TBD
+
 \section{Sta je Singular Value Decomposition?}
+TBD
+
 \section{Navesti jos neke metode dimenzione redukcije?}
+TBD
 
 \end{document}
