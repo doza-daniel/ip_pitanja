@@ -628,6 +628,7 @@ Neke od popularnih metoda su
 \end{table} 
 
 \section{Sta je diskretizacija? Kada se koristi? Kako se biraju intervali?}
+\label{sect_diskretizacija}
 Najcesce transformisemo podatke iz numerickih u kategoricke. Ovaj proces nazivamo
 \emph{diskretizacija}. Osnovni pristup je da numericke podatke podelimo u intervale, svakom
 intervalu pridruzimo jednu diskretnu vrednost i onda atribute sa numerickom vrednoscu iz nekog
@@ -850,45 +851,202 @@ TBD
 \section{Navesti jos neke metode dimenzione redukcije?}
 TBD
 
-\section{Sta je klasifikacija? Klasifikacioni model?}
-tbd
+\section{Sta je klasifikacija?}
+Klasifikacija je zadatak ucenja \textbf{ciljne funkcije} \(f\) koja mapira skup atributa \textbf{x}
+u neku od predefinisanih oznaka klase \(y\).
+
+Klasifikacioni model moze da sluzi za razlikovanje objekata razlicitih klasa, na primer model koji
+nam objasnjava razliku izmedju sisara, reptila, ptica, riba. Takodje se moze i koristiti kao model
+za predvidnjanje. Klasifikacioni model se moze koristiti kao crna kutija za odredjivanje oznake
+klase nekog objekta na osnovu poznatih atributa.
+
+\section{Sta je klasifikaciona tehnika? Nabrojati par.}
+Klasifikaciona tehnika (klasifikator) je sistematicni pristup izgradnji klasifikacioinog modela od
+ulaznog skupa podataka. Neki od klasifikatora su:
+\begin{itemize}
+    \item Drveta odlucivanja
+    \item Metode zasnovane na pravilima
+    \item Neuronske mreze
+    \item Statisticki zasnovane metode
+    \item Metode zansovane na podrzavajucim vektorima
+\end{itemize}
+
 \section{Kako se dele ulazni podaci klasifikacije?}
-tbd
-\section{Nabrojati tehnike klasifikacije.}
-tbd
-\section{Navesti primer primene modela drveta odlucivanja nad test podacima.}
-tbd
+Uobicajeni pristup klasifikaciji je da se ulazni podaci klasifikacije se dele na dva skupa.
+\emph{Trening} skup, cije su klasne oznake poznate, i \emph{Test} skup na koji se primenjuje
+klasifikacioni model, cije su klasne oznake nepoznate.
+
+\section{Sta je indukcija po drvetu odlucivanja? Primer.}
+Drvo odlucivanja kao klasifikator je jednostavna klasifikaciona tehnika, a ipak je u sirokoj
+upotrebi. Da bismo ilustrovali kako ova tehnika radi, uzmimo primer odredjivanja da li je neki
+kicmenjak sisar ili ne. Pristup bi bio postavljanje serije pitanja. Prvo pitanje koje bismo mogli da
+postavimo jeste da li je toplokrvna ili hladnokrvna zivotinja. Ako je hladnokrvna, onda definitivno
+nije sisar. Ukoliko je toplokrvna, ili je ptica ili je sisar. U tom slucaju, treba da postavimo
+naredno pitanje. Da li zenke te vrste radjaju svoje mladunce? One vrste koje radjaju su definitivno
+sisari, dok oni koji ne radjaju uglavnom nisu (uz neke izuzetke).
+
+Ovo je primer jednog nacina da se resi problem klasifikacije. Pazljivim postavljanjem pitanja o
+atributima nekog test podataka, dolazimo do zakljucka kojoj klasnoj oznaci taj objekat pripada.
+Ovakva serija pitanja moze da se organizuje u drvo. Ovakvo drvo ima tri vrste cvora:
+\begin{enumerate}
+    \item \textbf{Koreni cvor} --- nema ulaznih grana i ima 0 ili vise izlaznih grana
+    \item \textbf{Unutrasnji cvor} --- ima tacno jednu ulaznu granu i 2 ili vise izlaznih grana
+    \item \textbf{List (terminalni cvor)} --- ima tacno jednu ulaznu granu i nijednu izlaznu granu
+\end{enumerate}
+
+U cvorovima koji nisu listovi se nalaze testovi za odredjene atribute. Kretanjem kroz drvo
+(odgovaranjem na pitanja postavljena test uslovom u cvoru) krecemo se do listova u kojima se nalazi
+oznaka klase, koju pridruzujemo objektu nad kojim smo vrsili klasifikaciju.
+
 \section{Nabrojati bar tri algoritma za klasifikaciju drvetima odlucivanja.}
-tbd
+\begin{itemize}
+    \item Hantov algoritam
+    \item CART
+    \item C4.5
+    \item \ldots
+\end{itemize}
+
 \section{Opisati Hantov algoritam. Koju algoritamsku strategiju koristi?}
-tbd
+Neka je \(y = {y_1,\ldots,y_n}\) skup oznaka klase. Neka je \(D_t\) skup objekata koji se nalaze u
+cvoru \(t\) drveta odlucivanja. Ako svi objekti iz \(D_t\) pripadaju klasi \(y_i\), tada je cvor
+\(t\) list koji iznacavamo klasom \(y_i\). Ukoliko objekti pripadaju razlicitim klasama, koristimo
+\emph{test atribut} kako bismo skup podelili na podskupove, i onda za svaki podskup kreiramo novi
+cvor i primenjujemo algoritam rekurzivno.
+
+Hantov algoritam ce raditi ako trening skup sadrzi sve kombinacije atributa, i svaka kombinacija ima
+jedinstvenu oznaku klase. Ove pretpostavke su previse rigorizne za vecinu prakticnih situacija.
+\begin{enumerate}
+    \item Ukoliko se desi da novi cvor, kreiran podelom po test atributu, sadrzi prazan skup
+        objekata, tojest, da ni jedan trening objekat nema takvu kombinaciju vrednosti atributa,
+        takav cvor se proglasava za list sa klasom koja odgovara klasi cvora roditelja (kako
+        roditelj cvor nije list, tako on nema odredjenu klasu, te se za njegovu klasu uzima ona
+        kojoj pripada vecina objekata u tom cvoru)
+    \item Moguce je da svi objekti u jednom cvoru imaju sve iste vrednosti atributa, sem vrednosti
+        klase. U ovom slucaju se cvor proglasava za list i oznaka klasa koja mu se pridruzuje
+        odgovara oznaci klase koju ima vecina objekata u tom cvoru.
+\end{enumerate}
+
 \section{Koje odluke treba doneti pri indukciji po drvetu odlucivanja?}
-tbd
+Dve odluke koje algoritam ucenja za indukciju po drvetu odlucivanja mora doneti su:
+\begin{enumerate}
+    \item \textbf{Kako se trening podaci dele?} --- Svaki rekurzivni korak treba da odredi uslov
+        podele po nekom atributu. Za implementaciju ovog koraka, neophodno je da algoritam da metodu
+        za odredjivanje uslova podele za razlicite tipove atributa, kao i objektivnu meru za procenu
+        kvaliteta izbora.
+    \item \textbf{Kada se deoba treba zaustavti} --- Deoba se moze zaustaviti na primer kada svi
+        objekti pripadaju istoj klasi, ili kada svi objekti imaju jednake vrednosti atributa.
+\end{enumerate}
+
 \section{Kako odrediti uslove testiranja za atribute?}
-tbd
-\section{Opisati podelu zasnovanu na imenskim atributima.}
-tbd
-\section{Opisati podelu zasnovanu na rednim atributima.}
-tbd
-\section{Opisati podelu zasnovanu na neprekidnim atributima.}
-tbd
-\section{Kako odrediti najbolju podelu?}
-tbd
+Uslov za deobu zavisi od tipa atributa.
+
+\paragraph{Binarni atributi} Test uslov za binarne atribute generise dva potencijalna rezultata
+
+\paragraph{Imenski atributi} Imenski atributi mogu imati vise razlicitih vrednosti. Nacin za deobu
+imenskih atributa moze se izraziti na dva nacina:
+\begin{enumerate}
+    \item\label{deoba_imenski} podela na vise grana, i
+    \item\label{deoba_binarni} binarna podela.
+\end{enumerate}
+Primer za bi bio ako imamo atribut \emph{bracni status} koji moze da ima
+vrednosti \emph{neozenjen}, \emph{ozenjen} i \emph{razveden}. U slucaju~\ref{deoba_imenski} bismo
+delili objekte na 3 dela, a u slucaju~\ref{deoba_binarni} mozemo objekte podeliti na primer
+\emph{\{ozenjen\} \{neozenjen, razveden\}} ili na neku drugu od mogucih \(2^{k-1}-1\) mogucih
+kombinacija (gde je \(k\) ukupan broj vrednosti koje atribut moze da ima).
+
+\paragraph{Redni atributi} Slicno kao imenski, redni atributi se mogu podeliti na onoliko razlicith
+vrednosti koliko razlicitih vrednosti atribut moze da ima, ili binarno. Stvar koja se razlikuje je
+da prilikom binarne podele, moramo da pazimo da ne narusimo poredak vrednosti atributa. Na primer
+ako imamo redni atribut \emph{velicina majice} i on moze da ima vrednosti \emph{small},
+\emph{medium}, \emph{large} i \emph{extra large}, \emph{validne} binarne podele bi bile
+\begin{itemize}
+    \item \emph{\{small, medium\}, \{large, extra large\}}
+    \item \emph{\{small\}, \{medium, large, extra large\}},
+    \item \ldots
+\end{itemize}
+ 
+dok bi \emph{nevalidna} podela bila
+\begin{itemize}
+    \item \emph{\{small, extra large\}, \{medium, large\}}
+\end{itemize}
+
+\paragraph{Neprekidni atributi} Opet mozemo izvrsiti podelu binarno i na vise grana. U slucaju
+binarne podele, biramo objekte ciji atribut zadovoljava \(A < v\) ili  \(A \geqslant v\), pritom,
+moramo ispitati sve moguce vrednosti \(v\) po kojima se moze vrsiti podela, i izabrati najbolju. U
+slucaju podele na vise grana, biramo \(v_i \leqslant A < v_{i+1}\) za \(i=1,\ldots,k\). Prilikom
+ovog pristupa moramo izabrati sve moguce intervale i izabrati najbolji za podelu. Jedan od pristupa
+koji ovo omogucava je diskretizacija~\ref{sect_diskretizacija}.
+
 \section{Nabrojati mere koje se koriste za odredjivanje necistoce cvora. Kako se ove mere koriste
 pri odredjivanju kvaliteta uslova testiranja?}
-tbd
+Mere koje se koriste za odredjivanje najbolje podele su cesto bazirane na meri necistoce cvorova
+koje podela kreira. Na primer cvor sa podelom (0, 1) (0 cvorova pripada prvoj klasi, jedan pripada
+drugoj klasi) ima necistocu nula, dok cvor (1, 1) ima najvecu necistocu. Primeri mere necistoce
+cvora su:
+\begin{enumerate}
+    \item Entropija
+    \item Gini
+    \item Greska u klasifikaciji
+\end{enumerate}
+
+Da bismo utvrdili koliko je neka podela dobra, mozemo iskoristiti sledecu formulu
+\[
+    \label{formula_kvalitet_podele}
+    \Delta = I(roditelj) - \sum_{j=1}^{k} \dfrac{N(v_j)}{N}I(v_j)
+\]
+
+gde je \(I\) mera necistoce cvora, \(k\) je broj dece cvorova a \(N(v_j)\) je broj objekata u
+detetu cvoru \(v_j\). Sto je \(\Delta\) vece, to je podela kvalitetnija.
+
 \section{Opisati detaljno GINI meru necistoce cvora.}
-tbd
-\section{Kako se koristi GINI metoda pri podeli po binarnim atributima?}
-tbd
-\section{Kako se koristi GINI metoda pri podeli po kategorickim atributima?}
-tbd
-\section{Kako se koristi GINI metoda pri podeli po neprekidnim atributima?}
-tbd
+Neka je \(p(i|t)\) (nekada mozemo oznacavati i samo kao \(p_i\)) udeo objekata koji pripada klasi
+\(i\) u nekom cvoru \(t\). Drugim recima:
+\[
+    \dfrac{broj\_objekata\_klase\_i}{ukupan\_broj\_objekata\_u\_cvoru\_t}
+\]
+
+Neka je \(c\) broj razlicitih oznaka klase. Ginijeva mera necistoce cvora je
+\[
+    Gini(t) = 1 - \sum_{i=0}^{c-1} [p(i|t)]^2
+\]
+
+\paragraph{Podela binarnih atributa} Ova podela nije toliko komplikovana. Za svaki binarni atribut
+napravimo podelu, izracunamo Ginijev indeks za svaku od podela. Atribut koji odgovara podeli sa
+najmanjom vrednoscu Ginijevog indeksa se bira za podelu.
+
+\paragraph{Podela imenskih atributa} U slucaju da delimo imenske atribute binarno, isto postupamo
+kao pri podeli binarnih atributa tojest za svaku kombinaciju vrednosti imenskih atributa racunamo
+Ginijev indeks.
+
+U slucaju da delimo na vise grana, racunamo Ginijev indeks za svaku mogucu vrednost. Mozemo
+uporediti da li je bolje da delimo binarno ili na vise grana uporedjivanjem Ginijevih indeksa.
+
+Izracunavamo kvalitet podele po formuli za svaki nominalni atribut, i biramo atribut, kao i to da li
+cemo deliti binarno ili na vise grana, na osnovu izracunatih indeksa.
+
+\paragraph{Podela neprekidnih atributa} Pristup grube sile ovom problem bi bio da se posmatraju sve
+vrednosti atributa kao potencijalni kandidati za deobu. Izracunamo Ginijev indeks za svaku od ovih
+vrednosti i izaberemo vrednost koja ima najmanju vrednost Ginijevog indeksa. Ovaj pristup je
+neefikasan jer ima slozenost \(O(n^2)\). Drugi pristup bi bio da sortiramo moguce vrednosti podele,
+sto je slozenosti \(O(n\log n\), i onda mozemo linearnim prolaskom, pametno odredjivati Ginijeve
+indekse na osnovu prethodnih.
+
 \section{Opisati Entropiju kao meru necistoce cvora.}
-tbd
+Entropija se racuna kao
+\[
+    Entropy(t) = - \sum_{i=0}^{c-1} p(i|t)log_2 p(i|t)
+\]
+
+\emph{Maksimum} ove funkcije je \(\log n_c\), kada su cvorovi ravnomerno distribuirani. Ovo sadrzi
+najmanje zanjimljivih informacija. \emph{Minimum} ove funkcije je \(0\) sto znaci da svi atributi
+pripadaju jednoj klasi. Ovo sadrzi najvise zanimljivih informacija.
+
 \section{Opisati gresku u klasifikaciji kao meru necistoce cvora.}
-tbd
+Mera necistoce cvora zasnovana na gresci klasifikacije cvora se racuna kao
+\[
+    Error(t) = 1 - \max_i[p(i|t)]
+\]
+
 \section{Koji su kriterijumi za zaustavljanje indukcije po drvetu?}
 tbd
 \section{Koje su prednosti klasifikacije zasnovane na drvetima odlucivanja?}
@@ -904,6 +1062,14 @@ tbd
 \section{Sta je princip stedljivosti?}
 tbd
 \section{Sta je princip najmanje duzine opisa (Minimum Description Length --- MDL)?}
+tbd
+\section{Sta je pre-potkresivanje? Sta je potkresivanje po zavrsetku?}
+tbd
+\section{Sta je matrica konfuzije?}
+tbd
+\section{Sta je matrica cene?}
+tbd
+\section{Sta su mere osetljive na cenu?}
 tbd
 
 \end{document}
