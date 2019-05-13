@@ -8,6 +8,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{multirow}
 \usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
@@ -1046,30 +1047,181 @@ Mera necistoce cvora zasnovana na gresci klasifikacije cvora se racuna kao
 \[
     Error(t) = 1 - \max_i[p(i|t)]
 \]
+Maksimum je \(1-1/n_c\) kada su slogovi ravnomerno raspodeljeni u svim klasama sadrzi najmanje
+interesantne informacije. Minimum je \(0\) kada svi slogovi pripadaju jednoj klasi, sadrzi
+najinteresantnije informacije.
+
+\section{Sta je odnos dobiti?}
+Mere necistoce kao sto su entropija i Ginijev indeks favorizuju atribute koji imaju veliki broj
+razlicitih vrednosti. Ova cinjenica moze da predstavlja problem u slucaju kada imamo na primer
+atribut koji predstavlja identifikacioni broj korisnika. Identifikacioni broj korisnika nije dobar
+atribut za predvidjanje jer je on jedinstven za svakog korisnika. Postoje dve startegije za
+resavanje ovog problema.  Ograniciti podelu da bude uvek binarna. Koristi se u algoritmu \emph{CART}
+Druga strategija jeste da se modifikuje kriterijum deobe tako da uracuna broj rezultata koji se
+dobijaju deobom. Na primer, u algoritmu \emph{C4.5} kriterijum deobe koji se jos naziva i
+\textbf{odnos dobiti} (eng.\ gain ratio) se koristi kako bi se utvrdio kvalitet podele. Odnos dobiti
+se racuna kao:
+\[
+    OdnosDobiti = \dfrac{\Delta_{info}}{SplitInfo}
+\]
+Gde je \(SplitInfo = -\sum_{i=1}^{k}\dfrac{N_i}{N}\log_2\dfrac{N_i}{N}\), \(k\) je broj deoba, \(N\)
+je broj objekata u roditelj cvoru, a \(N_i\) je broj cvorova u detetu cvoru.
+
+Ovo znaci da ukoliko deobom po nekom atributu dobijemo veliki broj deoba, ona ce imati veci
+\(SplitInfo\) i samim tim manji \(OdnosDobiti\)
 
 \section{Koji su kriterijumi za zaustavljanje indukcije po drvetu?}
-tbd
-\section{Koje su prednosti klasifikacije zasnovane na drvetima odlucivanja?}
-tbd
+Sirenje drveta se zaustavlja kada svi slogovi pripadaju istoj klasi
+\begin{itemize}
+    \item Sirenje drveta se zaustavlja kada svi slogovi pripadaju istoj klasi
+    \item Sirenje drveta se zaustavlja kada svi slogovi imaju iste vrednosti atributa
+    \item Ranije zaustavljanje
+\end{itemize}
+
 \section{Koji su prakticni problemi pri klasifikaciji?}
-tbd
+\begin{itemize}
+    \item Preprilagodjavanje i potprilagodjavanje
+    \item Nedostajuce vrednosti
+    \item Cena klasifikacije
+\end{itemize}
+
 \section{Kako se dele greske pri klasifikaciji?}
-tbd
+Greske nacinjene od strane klasifikacionog modela su podeljene u dva tipa: \textbf{greske pri
+treniranju} i \textbf{greske u uopstavanju}. Greska pri treniranju, takodje poznata kao
+\textbf{greske resupstitucije} je broj misklasifikacija nad podacima za treniranje, dok je greska u
+uopstavanju broj ocekivanih gresaka nad nepoznatim podacima. Nama je cilj da i greske pri treniranju
+kao i greske uopstavanja budu sto manje.
+
 \section{Sta je preprilagodjavanje a sta potprilagodjavanje modela?}
-tbd
+\paragraph{Preprilagodjavanje modela} Model sa malom greskom na trening podacima moze imati vecu
+gresku pri generalizaciji od nekog modela koji ima manju gresku prilikom procesa treninga. Postoje
+razni razlozi za preprilagodjavanje modela.
+\begin{enumerate}
+    \item \textbf{zbog suma} --- trening podaci mogu sadrzati nege greske,
+        odnosno sum.  Ukoliko napravimo model koji radi bez greske na trening podacima, on ce
+        obuhvatiti ove greske, i pri generalizaciji moze da pogresno klasifikuje one neke objekte
+        koji dele vrednosti atributa sa onim objektima koji su pogresni u trening podacima.
+    \item \textbf{zbog nedostatka reprezentativnih uzoraka} --- modeli koji svoje odluke donose na
+        osnovu malog trening skupa, takodje su podlozni preprilagodjavanju. Takvi modeli mogu biti
+        generisani zbog nedostatka reprezentativnih uzoraka iz trening skupa.
+\end{enumerate}
+
+\paragraph{Potprilagodjavanje modela} Ako je model isuvise jednostavan i greska pri treniranju i
+greska pri uopstavanju mogu da budu jako visoke.
+
 \section{Sta je procena greske u generalizaciji? Zasto se koristi?}
-tbd
-\section{Sta je princip stedljivosti?}
-tbd
-\section{Sta je princip najmanje duzine opisa (Minimum Description Length --- MDL)?}
-tbd
-\section{Sta je pre-potkresivanje? Sta je potkresivanje po zavrsetku?}
-tbd
+Preprilagodjavanje kod modela zasnovanih na drvetu odlucivanja se javljaju kada je drvo odlucivanja
+slozenije nego potrebno. Pitanje je kako mozemo da odredimo dobru slozenost modela. Idealna
+slozenost modela je ta koja daje najmanju gresku pri generalizaciji. Problem je sto algoritam ima
+pristup samo skupu trening podataka dok gradi model. Takodje nema nikakvo znanje o test skupu pa
+zato ne zna koliko dobro ce se ponasati na podacima koje nije video pre. Dakle treba nam metoda za
+procenu greske.
+\paragraph{Koriscenje greske resupstitucije} Ovaj pristup pretpostavlja da trening skup dobro
+predstavlja celokupne podatke. Pri ovom optimistickom pristupu, algoritam jednostavno bira model
+koji izaziva najmanju gresku nad trening podacima. Ovo je uglavnom los metod.
+
+\paragraph{Okamova ostrica} Kao sto smo vec pomenuli, preprilagodjavanje se povecava kako model
+postaje slozeniji. Iz ovog razloga treba da preferiramo jednostavnije modele. Ovo je dobro poznata
+strategija Okamove ostrice. Ako nam je dato dva modela sa istom greskom generalizacije, biramo
+jednostavniji.
+
+\paragraph{Pesimisticki pristup} Neka je \(n(t)\) broj trening podataka koja se klasifikuje od
+strane cvora \(t\) i neka je \(e(t)\) broj lose klasifikovanih podataka. Pesimisticka procena drveta
+odlucivanja \(T\), \(e_g(T)\), moze da se izracuna kao:
+\[
+    e_g(T) = \dfrac{\sum_{i=1}^{k}[e(t_i)+\Omega(t_i)]}{\sum_{i=1}^{k}n(t_i)}
+        = \dfrac{e(T) + \Omega(T)}{N_t}
+\]
+gde je \(k\) broj listova, \(e(T)\) ukupan broj trening gresaka drveta odlucivanja \(N_t\) je broj
+trening podataka, a \(\Omega(t_i)\) je cena dodavanja lista cvoru \(t_i\)
+
+\paragraph{Sta je princip najmanje duzine opisa (Minimum Description Length --- MDL)?} Ovaj
+informaciono-teorijski pristp se naziva princip najmanje duzine opisa. Prikazimo ovaj princip na
+primeru. Neka osoba \textbf{A} i osoba \textbf{B} imaju isti skup podataka sa poznatim skupom
+atributa \textbf{x}. Dodatno, samo osoba A zna klase podataka, dok osoba B ne zna. Ukoliko bi osoba
+A slala informacije osobi B sekvencijalno, takva poruka bi zahtevala \(\Theta(n)\) bitova
+informacije. Alternativno, osoba A moze da konstruise klasifikacioni model koji sumira odnos izmedju
+\(x\) i \(y\). Model moze biti kodiran u kompaktan zapis pre slanja osobi B. Ako je preciznost
+modela 100\%, onda je cena prenosenja jednaka ceni kodiranja modela. Na primer, ako je model prava,
+jasno je da je slanje koeficijenata prave beze od slanja svih podataka. Ukupna cena prenosenja je
+\[
+    Cena(model,podaci) = Cena(model) + Cena(podaci|model)
+\]
+pri cemu je prvi prvi sabirak cena kodiranja modela, a drugi sabirak oznacava cenu kodiranja
+pogresno klasifikovanih instanci. Prema principu MDL, treba traziti model koji minimizira ukupnu
+funkciju cene.
+
+\section{Sta je prepotkresivanje? Sta je potkresivanje po zavrsetku?}
+\paragraph{Prepotkresivanje (pravilo ranijeg zaustavljanja)} Algoritam se zaustavlja pre nego sto
+stablo naraste do maksimalne velicine. Tipicni uslovi zaustavljanja za odredeni cvor su: `zaustavi
+se ako sve instance pripadaju istoj klasi' ili `zaustavi se ako su sve vrednosti atributa iste'.
+Dodatna ogranicenja mogu biti, na primer, `zaustavi se ako je broj instanci manji od neke unapred
+zadate granice', `zaustavi se ako je raspodela instanci nezavisna od raspodele atributa' (na primer,
+vidi se primenom \(\chi^2\) testa) ili `zaustavi se ako sirenje tekuceg cvora ne poboljsava meru
+cistoce' (na primer, Ginijev indeks ili informaciona dobit).
+
+\paragraph{Prepotkresivanje (pravilo ranijeg zaustavljanja)} Drvo odlucivanja raste do krajnjih
+granica, pa se zatim iseku cvorovi u drvetu od dna ka vrhu.  Ako se greska generalizacije poboljsa
+posle odsecanja poddrvo se zameni sa cvorom koji je list.  Oznaka klase lista se odreduju prema
+vecini klasa instanci poddrveta. Za potkresivanje po zavrsetku se moze koristiti i MDL.
+
 \section{Sta je matrica konfuzije?}
-tbd
+Matrica konfuzije je jedan od nacina evaluacije performansi klasifikacije.
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|c|c|c|c|}
+    \hline
+    & \multicolumn{3}{|c|}{Predvidjena klasa} \\ \hline
+    \multirow{ 3}{*}{Prava klasa} & & C+ & C-- \\ 
+    & C+ & TP & FN \\ 
+    & C-- & FP & TN \\ \hline
+\end{tabular}
+\caption{Matrica konfuzije}
+\end{table}
+Vrednosti u matrici imaju sledeca znacenja \textbf{FP} --- false positive, \textbf{FN} --- false
+negative, \textbf{TP} --- true positive, \textbf{TN} --- True negative. C+ i C-- predstavljaju dve
+klase jedne kategorije, koje posmatramo kao ,,pozitivno'' i ,,negativno''.
+\[
+    Preciznost = \dfrac{TP + TN}{TP + TN + FP + FN}
+\]
 \section{Sta je matrica cene?}
-tbd
+Matrica konfuzije je jedan od nacina evaluacije performansi klasifikacije. Na primer, neka imamo
+podatke sa informacijama o kupcima, pri cemu je 99\% kupaca zadovoljno, a 1\% kupaca nzadovoljno.
+Zbog toga cemo podstaci da je pogresna klasifikacija kupca koji nije zadovoljan, na primer, deset
+puta skuplja za nas nego pogresna klasifikacija kupca koji je zadovoljan. Tabela~\ref{matrica_cene}
+prikazuje opstiji primer matrice cene, pri cemu vrednost \(Cena(i|j)\) oznacava cenu pogresne
+klasifikacije instance \(j\) kao instanca klase \(i\).
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|c|c|c|c|}
+    \hline
+    & \multicolumn{3}{|c|}{Predvidjena klasa} \\ \hline
+    \multirow{ 3}{*}{Prava klasa} & & C+ & C-- \\ 
+    & C+ & Cena(C+|C+) & Cena(C-|C+) \\ 
+    & C-- & Cena(C+|C-) & Cena(C-|C-)\\ \hline
+\end{tabular}
+\caption{Matrica cene}
+\label{matrica_cene}
+\end{table}
+
 \section{Sta su mere osetljive na cenu?}
-tbd
+Uvedimo dve pomocne mere
+\[
+    Preciznost = p = \dfrac{TP}{TP+FP},
+\]
+\[
+    Odziv = r = \dfrac{TP}{TP+FN},
+\]
+Nama treba harmonijska sredina ove dve mere. Harmonijska mera je najostrija. Posledica toga je sto
+cim krene da opada preciznost ili odziv, to se veoma znacajno odrazava na \(F\)-meru. Sto
+predstavljamo formulom koju jos nazivamo i \(F_1\)-mera
+\[
+    F-Mera = F = \dfrac{2}{\dfrac{1}{p}+\dfrac{1}{r}} = \dfrac{2TP}{2TP + FN + FP}
+\]
+\(F\)-mera je specijalan slucaj \(F_{\beta}\)-mere
+\[
+    F_{\beta} = (1+\beta)^2 * \dfrac{p+r}{\beta^2*p + r}
+\]
+
 
 \end{document}
