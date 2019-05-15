@@ -8,6 +8,9 @@
 \usepackage[T1]{fontenc}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage[inline]{enumitem}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{multirow}
 \usepackage{hyperref}
 \hypersetup{
@@ -991,10 +994,10 @@ cvora su:
 \end{enumerate}
 
 Da bismo utvrdili koliko je neka podela dobra, mozemo iskoristiti sledecu formulu
-\[
-    \label{formula_kvalitet_podele}
+\begin{equation}
+    \label{eq:dobit}
     \Delta = I(roditelj) - \sum_{j=1}^{k} \dfrac{N(v_j)}{N}I(v_j)
-\]
+\end{equation}
 
 gde je \(I\) mera necistoce cvora, \(k\) je broj dece cvorova a \(N(v_j)\) je broj objekata u
 detetu cvoru \(v_j\). Sto je \(\Delta\) vece, to je podela kvalitetnija.
@@ -1007,9 +1010,9 @@ Neka je \(p(i|t)\) (nekada mozemo oznacavati i samo kao \(p_i\)) udeo objekata k
 \]
 
 Neka je \(c\) broj razlicitih oznaka klase. Ginijeva mera necistoce cvora je
-\[
+\begin{equation}\label{eq:gini}
     Gini(t) = 1 - \sum_{i=0}^{c-1} [p(i|t)]^2
-\]
+\end{equation}
 
 \paragraph{Podela binarnih atributa} Ova podela nije toliko komplikovana. Za svaki binarni atribut
 napravimo podelu, izracunamo Ginijev indeks za svaku od podela. Atribut koji odgovara podeli sa
@@ -1061,9 +1064,10 @@ Druga strategija jeste da se modifikuje kriterijum deobe tako da uracuna broj re
 dobijaju deobom. Na primer, u algoritmu \emph{C4.5} kriterijum deobe koji se jos naziva i
 \textbf{odnos dobiti} (eng.\ gain ratio) se koristi kako bi se utvrdio kvalitet podele. Odnos dobiti
 se racuna kao:
-\[
+\begin{equation}
+    \label{eq:odnos_dobiti}
     OdnosDobiti = \dfrac{\Delta_{info}}{SplitInfo}
-\]
+\end{equation}
 Gde je \(SplitInfo = -\sum_{i=1}^{k}\dfrac{N_i}{N}\log_2\dfrac{N_i}{N}\), \(k\) je broj deoba, \(N\)
 je broj objekata u roditelj cvoru, a \(N_i\) je broj cvorova u detetu cvoru.
 
@@ -1160,10 +1164,10 @@ zadate granice', `zaustavi se ako je raspodela instanci nezavisna od raspodele a
 vidi se primenom \(\chi^2\) testa) ili `zaustavi se ako sirenje tekuceg cvora ne poboljsava meru
 cistoce' (na primer, Ginijev indeks ili informaciona dobit).
 
-\paragraph{Prepotkresivanje (pravilo ranijeg zaustavljanja)} Drvo odlucivanja raste do krajnjih
-granica, pa se zatim iseku cvorovi u drvetu od dna ka vrhu.  Ako se greska generalizacije poboljsa
-posle odsecanja poddrvo se zameni sa cvorom koji je list.  Oznaka klase lista se odreduju prema
-vecini klasa instanci poddrveta. Za potkresivanje po zavrsetku se moze koristiti i MDL.
+\paragraph{Naknadno potkresivanje} Drvo odlucivanja raste do krajnjih granica, pa se zatim iseku
+cvorovi u drvetu od dna ka vrhu.  Ako se greska generalizacije poboljsa posle odsecanja poddrvo se
+zameni sa cvorom koji je list.  Oznaka klase lista se odreduju prema vecini klasa instanci
+poddrveta. Za potkresivanje po zavrsetku se moze koristiti i MDL.
 
 \section{Sta je matrica konfuzije?}
 Matrica konfuzije je jedan od nacina evaluacije performansi klasifikacije.
@@ -1223,5 +1227,231 @@ predstavljamo formulom koju jos nazivamo i \(F_1\)-mera
     F_{\beta} = (1+\beta)^2 * \dfrac{p+r}{\beta^2*p + r}
 \]
 
+\section{Opisati algoritam ID3.}
+tbd
+\section{Opisati algoritam C4.5.}
+\subsection{Opis algoritma}
+C4.5 je skup algoritama klasifikacije u masinskom ucenju i istrazivanju podataka. Razvio ga je
+Quinlan kao naslednika algoritma ID3.  Usmeren je ka nadgledanom ucenju: Ako nam je dat skup
+\emph{objekata} koji su opisanih skupom \emph{atributima} i pripadaju nekim \emph{klasama}, C4.5 uci
+preslikavanje iz skupa vrednosti atributa u klase, koje moze biti primenjeno za klasifikaciju novih,
+do tada nepoznatih objekata.
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+
+\begin{algorithm}
+\caption{C4.5}\label{code:c4.5}
+\begin{algorithmic}[1]
+    \Require{matrica podataka \emph{D}}
+    \Procedure{C4.5}{D}
+    \State Tree = \{\}
+    \If { svaki element iz \emph{D} pripada istoj klasi \textbf{ILI} neki drugi kriterijum }
+    \State terminate
+    \EndIf
+    \ForAll{atribut a \(\in\) \emph{D}}
+        \State Odrediti informacionu dobit deobe po atributu \emph{a}
+    \EndFor
+    \State \(a_{best}\) = Najbolji atribut za deobu
+    \State Tree = Napravi koreni cvor koji testira po \(a_{best}\)
+    \State \(D_v\) = Svi podskupovi \(D\) podeljeni po \(a_{best}\)
+
+    \ForAll{\(D_v\)}
+        \State \(\text{Tree}_v\) = C4.5(\(D_v\))
+        \State Dodati granu ka \(\text{Tree}_v\) iz Tree
+    \EndFor
+    \State \Return Tree
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{Koji su moguci tipovi?} C4.5 nije ogranicen na rukovanje samo binarnim testovima, i
+dozvoljava deljenje na dve ili vise grana. Ako je atribut tipa \emph{bool}, test rezultuje dvema
+granama. Ako je atribut kategoricki, onda pravimo vise grana, ali takodje razlicite vrednosti mogu
+biti grupisane u manje skupove. Ako je atribut numericki, rezultat je opet binaran u formi \(\{\leq
+\theta?, > \theta?\}\) gde je \(\theta\) pazljivo izabrana granica izmedju intervala.
+
+\paragraph{Kako se biraju testovi?} C4.5 koristi \emph{entropiju} kao meru,
+\emph{dobit}(jednacina~\ref{eq:dobit}) i \emph{odnos dobiti}(jednacina~\ref{eq:odnos_dobiti}) kao
+kriterijum podele. Podrazumevani kriterijum je odnos dobiti. U svakoj tacki sirenja drveta, test sa
+najboljim kriterijumom se bira pohlepno (ne razmatraju se buduci izbori).
+
+\paragraph{Kako se biraju granice?} Kao sto je vec navedeno, za istinitosne i kategoricke atribute,
+vrednosti testa su jednostavno razlicite vrednosti koje taj atribut moze da ima. Za numericke
+atribute, granica se bira sortiranjem po tom atributu, pa se svaka deljenjem svaka dva susedna
+ispituje koja podela maksimizuje pomenuti kriterijum.
+
+\paragraph{Kako se zaustavlja sirenje stabla?} Grana iz cvora se proglasava da vodi u list ako svaki
+objekat koji je pokriven tom granom pripada jednoj klasi. Jos jedan nacin na koji se zaustavlja
+sirenje je ako broj objekata padne ispod neke odredjene granice.
+
+\paragraph{Kako se oznake klasa dodeljuju listovima?} Listu se dodeljuje klasa kojoj pripada najvise
+objekata.
+
+\subsection{Odlike}
+\paragraph{Potkresivanje drveta} Potkresivanje drveta, neophodne je kako bi se izbegla
+preprilagodjenost modela. Potkresivanje se izvrsava kada je drvo kompletno, od dna ka vrhu. Postoje
+razne taktike. Algoritam \emph{CART} koristi pristup gde se pravi serija stabala, gde se svako
+stablo dobija tako sto se neko od podstabala zameni listom. Za biranje lista kojim se menja
+podstablo, koristi se mera osetljiva na cenu. Svako stablo se evaluira na skupu test podataka i bira
+se ,,najbolje''.
+
+\emph{Smanjenje nivoa greske} je uproscavanje pomenutog pristupa. Koriste se posebni test podaci. Za
+svako podstablo koje nije list u originalnom drvetu odlucivanja se procenjuje da li ima koristi da
+se to podstablo zameni najboljim mogucim listom. Ako se tako dobijeno stablo ponasa bolje, podstablo
+postaje list. Ove zamene se izvrsavaju sve dok naredne zamene ne krenu da zapravo povecavaju gresku
+umesto da je smanjuju.
+
+\emph{Pesimisticka procena geske} je inovacija u C4.5 kojoj nije potreban odvojen skup za
+testiranje. Ona procenjuje gresku koja bi mogla da se javi na osnovu broja pogresnih klasifikacija u
+trening skupu. Ovaj pristup rekurzivno procenjuje gresku koja odgovara cvoru u zavisnosti od
+procenjenih greski njegovih grana.
+
+\emph{Intervali poverenja} su prosirenje pesimistickog pristupa. Mozemo modelirati stop greske \(e\)
+u listovima  kao Bernulijeve slucajne promenljive. Ako je \(CI\) interval poverenja, gornja granica
+\(e_{max}\) moze se odrediti \(e < e_{max}\) sa verovatnocom \(1-CI\) (C4.5 koristi \(CI=0.25\)).
+
+\paragraph{Rukovanje nedostajucim vrednostima} Postoje tri glavna problema:
+\begin{enumerate*}[label=(\roman*)]
+    \item Kada uporedjujemo atribute radi grananja, a neki imaju nedostajuce vrednosti, kako
+        izabrati pravu atribut za deljenje?
+    \item Nakon odabira atributa po kome se vrsi grananje, ni jedan objekat iz trening skupa ne moze
+        pripadati ni jednom rezultatu testa grananja. Kako tretirati te vrednosti prilikom podele na
+        podskupove?
+    \item Konacno, kada se drvo iskoristi za klasifikovanje novog objekta, kako da nastavimo niz
+        odluka ako drvo vrsi test grananja po atributu koji ima nedostajucu vrednost?
+\end{enumerate*}
+Primetimo da su prva dva problema vezana za ucenje, dok se treci problem odnosi na aplikaciju drveta
+na nove objekte. Postoji vise nacina za resavanje svakog od ovih pitanja.
+
+Za prvi problem mozemo da:
+\begin{enumerate}
+    \item ignorisemo slucajeve u trening podacima koji imaju nedostajucu vrednost
+    \item zamenimo najcescom vrednosti ili medijanom poznatih vrednosti
+    \item pomnozimo informacionu dobit sa procentom poznatih vrednosti
+    \item popunimo vrednost na osnovu ostalih atributa
+\end{enumerate}
+
+Za drugi problem mozemo da podelimo trening skup dok rekuzivno gradimo stablo. U slucaju da se
+stablo grana po \(a\) za koje jedan ili vise objekata iz trening skupa imaju nedostajuce vrednosti,
+onda mozemo da:
+\begin{enumerate}
+    \item ignorisemo slucajeve u trening podacima koji imaju nedostajucu vrednost
+    \item da se ,,pravimo'' da je objekat imao najcescu vrednost iz skupa vrednosti tog atributa
+        \(a\)
+    \item pridruziti objekat, svakom podskupu, proporcionalno broju objekata sa poznatim vrednostima
+        u svakom podskupu
+    \item pridruzimo objekat svakom podskupu
+    \item napravimo novu granu za objekte sa nedostajucim vrednostima za \(a\)
+    \item odredimo najslicniju vrednost, i dodelimo atributu \(a\)
+    \item dodamo objekat u samo jedan podskup, ali opet proporcionalno broju objekata sa poznatim
+        vrednostima u tom podskupu
+\end{enumerate}
+
+Ukoliko klasifikujemo novi objekat sa nedostajucom vrednosti atributa \(a\), opcije su
+\begin{enumerate}
+    \item ukoliko postoji podskup sa nedostajucim vrednostima, ubacujemo u taj podskup
+    \item granamo se po grani koja ima najcescu vrednost \(a\)
+    \item pokusamo da zakljucimo vrednost \(a\) iz ostalih vrednosti, i onda se granamo po dobijenoj
+        vrednosti
+    \item ubacujemo u podskupove prema relativnoj verovatnoci dobijenoj pretrazivanjem svih mogucih
+        ishoda testiranja
+\end{enumerate}
+
+\section{Opisati algoritam CART.}
+\subsection{Pregled}
+CART drvo odlucivanja je binarno rekurzivna procedura deljenja sposobna da obradi neprekidne i
+imenske atribute kao ciljne klase i kao atribute na osnovu kojih se deli (?????). Podacima se rukuje
+u njihovoj sirovoj formi; nema potrebe za diskretizacijom, niti je ona preporucena. Pocevsi od
+korena, podaci se dele na dva deteta. Rekurzivno se dele cvorovi i siri se stablo bez kriterijuma
+zaustavljanja, sve dok podela vise nije moguca usled nedostatka podataka. Citavo drvo se naknadno
+potkresuje od listova ka korenu metodama osetljivim na cenu. Mehanizam CART algoritma ne proizvodi
+jedno drvo, vec seriju ugnjezdenih potkresanih drveta, od kojih je svako kandidat da bude optimalno.
+Za razliku od C4.5, CART ne koristi internu meru performansi baziranu na trening skupu podataka, vec
+se testiranje vrsi na nezavisnim test podacima.
+\subsection{Pojednostavljen pogled na algoritam}
+
+\paragraph{Kreiranje drveta} Potpuno objasnjene CART algoritma, koje ukljucuje sve relevantne
+tehnicke detalje, je dugacko i kompleksno; ima vise pravila za deljenje kako za klasifikaciju, tako
+i za regresiju, odvojeno rukovanje neprekidnim i kategorickim atributima, nedostajuce
+vrednosti\ldots Nakon toga, potkresivanje je takodje jedna kompleksna operacija i konacno, izbor
+odgovarajuceg drveta. Dacemo jednostavan pogled na algoritam radi lakseg razumevanja
+
+\begin{algorithm}[H]
+    \caption{CART}\label{code:cart}
+    \begin{algorithmic}[1]
+        \Procedure{CART}{D}
+            \State dodeli sve podtake iz \(D\) korenu stabla
+            \State definisi koren kao list
+            \ForAll{ list \(l\) u stablu:}
+                \If {elementi pripadaju istoj klasi ili nema dovoljno elemenata}
+                \State goto NEXT
+                \EndIf
+                \State pronadji atribut koji najbolje razdvaja cvor na dva cvora
+                \State NEXT:
+            \EndFor
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\paragraph{potkresivanje} Kada drvo poraste na svoju maksimalnu velicinu, CART onda generise
+ugnjezdenu sekvencu potkresanih stabala. Pojednostavljena verzija potkresivanja bi bila: Uzmi
+maksimalno drvo (\(T_{max}\)) i uklanjajuci deobe dodji do dva lista koja ne popravljaju preciznost
+drveta nad trening podacima. Ovo je pocetno stanje procedure potkresivanja. Potkresivanje se dalje
+nastavlja iterativno uklanjanjem najslabijih karika u drvetu (deobe koje najmanje povecavaju
+performanse drveta). Kriterijum koji se koristi za potkresivanje naziva se \emph{potkresivanje
+rezanjem troskova} (engl.\ cost-complexity pruning) koja definisemo kao
+\begin{equation}\label{eq:cost-complexity-pruning}
+    Ra(T) = R(T) + a|T|
+\end{equation}
+gde \(R(T)\) cena dobijena nad trening uzorkom, \(|T|\) je ukupan broj listova, a \(a\) je kazneni
+faktor odredjen od strane cvora. Ako je \(a = 0\) onda je minimalno drvo dobijeno ovim metodom
+upravo maksimalno drvo dobijeno algoritmom sirenja.
+
+\subsection{Pravila deljenja}
+Pravila deljenja u CART algoritmu uvek imaju formu
+\[
+    \text{Objekat ide levo ako USLOV, inace ide desno}
+\]
+gde je USLOV za neprekidne atribute [\(atribut \leq neka\_vrednost\)], a za kategoricke je
+[\(atribut \in neki\_skup\_vrednosti\)].
+
+Mere koje se koriste pri deljenju: Gini(formula~\ref{eq:gini}), twoing, uredjeni twoing, simetricni
+gini. Twoing je metoda bazirana na uporedjivanju distribucije ciljnog atributa u dva deteta cvora.
+
+\subsection{Prethodne verovatnoce i nebalansirane klase}
+Nebalansirane klase su problem jer se vecina metoda istrazivanja podataka lose ponasa nad njima. Na
+primer manje od 1\% transakcija kreditnih kartica su transakcije koje predstavljaju nekakvu prevaru.
+Ako bismo trening skup pokusali da ogranicimo da ima jednak broj objekata iz obe klase, imali bismo
+veoma mali trening skup.
+
+CART se automatski prilagodjava disbalansu. Podaci mogu da se modeliraju kako su pronadjeni, bez
+preprocesiranja.
+
+Da bi mogao da pruzi ovakvu fleksibilnost, kartko koristi prethodne verovatnoce. One su ubacene u
+metode za odredjivanje kvaliteta podele. U svom podrazumevanom modu klasifikacije, CART uvek racuna
+frekvenciju vrednosti po klasama u bilo kom cvoru u odnosu na frekvencije po klasama u korenu. Ovo
+je jednako automatskom uravnotezavanju podataka po klasama, i ima za posledicu da ce izabrano drvo
+da minimizuje gresku disbalansiranih klasa.
+
+\subsection{Nedostajuce vrednosti}
+Jedna od vecih doprinosa CART algoritmu, bio je efektivni mehanizam za automatsko resavanje
+nedostajucih vrednosti. Tri situacije u kojima se obradjuju nedostajuce vrednosti:
+\begin{itemize}
+    \item \textbf{prilikom biranja pogodnog atributa za podelu} --- prvobitne verzije karta su
+        ignorisale nedostajuce vrednosti ovih atributa, dok ih naredne verzije uzimaju u obzir.
+        Recimo da nedostaje 20\% vrednosti nekog atributa, onda se njegova mera smanjuje za 20\%
+    \item \textbf{prilikom smestanja podataka u cvorove}
+    \item \textbf{prilikom aplikacije na nove podatke}
+\end{itemize}
+
+Za drugi i treci slucaj, CART koristi princip ,,surogata''. Kada se naidje na nedostajucu vrednost
+za atribut \(X\), bira se novi atribut \(Y\) po kome ce se objekti sa nedostajucim vrednostima za
+\(X\) podeliti. Podela po \(Y\) treba da bude bolja od podele po \(X\), tako da nije uvek moguce
+naci surogate. U slucaju da nema surogata, podrazumevano ponasanje dodeljuje objekat vecem detetu
+cvoru.
+
+\subsection{Bitnost Atributa}
+Bitnost atributa \(X\)se izracunava kao suma dobiti u svakom cvoru gde je atribut \(X\) bio izabran
+za podelu, pomnozen procentom broja objekata u cvoru. Surogati se takodje ukljucuju.
 
 \end{document}
