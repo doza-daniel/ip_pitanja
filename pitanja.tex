@@ -411,7 +411,9 @@ rastojanje definisemo kao:
 Ova metoda ne uzima u obzir odnos pojavljivanja reci. Mi znamo da su tekstovi slicniji ukoliko se
 podudaraju na recima koje se retko javljaju, nego na onim koje se cesto javljaju. \emph{Inverznu
 frekvenciju dokumenta} definisemo kao:
-\[id_i = \log(n/n_i)\]
+\begin{equation}\label{eq:inverzna_funkcija_dokumenta}
+    id_i = \log(n/n_i)
+\end{equation}
 gde je \(n\) ukupan broj dokumenata, a \(n_i\) je broj dokumenata u kojima se \(i\)-ta rec
 pojavljuje.
 
@@ -1306,7 +1308,7 @@ testiranje. Ona procenjuje gresku koja bi mogla da se javi na osnovu broja pogre
 trening skupu. Ovaj pristup rekurzivno procenjuje gresku koja odgovara cvoru u zavisnosti od
 procenjenih greski njegovih grana.
 
-\emph{Intervali poverenja} su prosirenje pesimistickog pristupa. Mozemo modelirati stop greske \(e\)
+\emph{Intervali poverenja} su prosirenje pesimistickog pristupa. Mozemo modelirati stopu greske \(e\)
 u listovima  kao Bernulijeve slucajne promenljive. Ako je \(CI\) interval poverenja, gornja granica
 \(e_{max}\) moze se odrediti \(e < e_{max}\) sa verovatnocom \(1-CI\) (C4.5 koristi \(CI=0.25\)).
 
