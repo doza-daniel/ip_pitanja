@@ -539,27 +539,28 @@ Slicnost diskretnih podataka mozemo predstaviti kao cenu transformacije jednog o
 Za prvih \(i\) atributa iz \(\overline{X}=(x_1,x_2,\ldots,x_n)\) i prvih \(j\) atributa iz
 \(\overline{Y}=(y_1,y_2,\ldots,y_n)\), edit rastojanje je:
 
-\[
+\begin{equation}\label{eq:edit_distance}
     Edit(i, j) = min
     \begin{cases}
         Edit(i-1, j) + cena\_brisanja \\
         Edit(i, j-1) + cena\_umetanja \\
         Edit(i-i, j-1) + I_{ij} \cdot cena\_zamene \\
     \end{cases}
-\]
+\end{equation}
+
 Vrednost \(I_{ij}\) je 1 ukoliko su \(i\)-ti simbol u \(\overline{X}\) i \(j\)-ti simbol u
 \(\overline{Y}\) isti, inace je 0.
 
 Jos jedan pristup koji se koristi za poredjenje objekata sa diskretnim atributima, je metoda
 najduzeg zajednickog podniza, ali takvog da ne moraju elementi biti jedan za drugim.
-\[
+\begin{equation}\label{eq:lcss}
     LCSS(i, j) =
     \begin{cases}
         \emptyset & i = 0 \lor j = 0 \\
-        LCSS(i-1, j-1) & i,j > 0 \land x_i = y_i \\
+        LCSS(i-1, j-1).append(x_i) & i,j > 0 \land x_i = y_i \\
         longest\{LCSS(i, j-1), LCSS(i-1, j)\} & i,j > 0 \land x_i \neq y_i \\
     \end{cases}
-\]
+\end{equation}
 
 \section{Sta je entropija?}
 Entropija dogadjaja \(X\) je
