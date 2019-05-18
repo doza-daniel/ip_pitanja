@@ -757,23 +757,24 @@ Kljucne metode za otklanjane ili korekciju nekorektnih vrednosti su:
 
 \section{Sta podrazumeva rad sa dupliranim podacima?}
 \section{Kada se i kako primenjuju skaliranje i normalizacija?}
-I mnogo slucajeva, razliciti osobine su razlicito skalirane. Na primer broj godina i visina plate.
+U mnogo slucajeva, razlicite osobine su razlicito skalirane. Na primer broj godina i visina plate.
 Visina plate je mnogo veca od broja godina, sto bi znacilo da bi rezultati primene bilo kog metoda
 agregiranja podataka bili odredjeni vecinom od strane atributa sa vecim vrednostima.
 
 Da bismo resili ovaj problem primenjujemo \emph{standardizaciju}. Neka \(j\)-ti atribut ima srednju
 vrednost \(\mu_j\) i standardnu devijaciju \(\sigma_j\) i neka je \(\overline{X_i}\) \(i\)-ti slog.
 Atribut \(x_{ij}\) mozemo skalirati kao:
-\[
+\begin{equation}\label{eq:standardizacija}
     z_{ij} = \dfrac{x_{ij} - \mu_j}{\sigma_j}
-\]
+\end{equation}
 
-Drugi pristup je da koristimo \emph{min, maks} skaliranje, kako bismo sveli atribute na vrednosti u
-intervalu \([0, 1]\). Neka je \(\overline{X_i}\) \(i\)-ti slog i neka su \(min_j\) i \(max_j\) redom
-minimalna i maksimalna \(j\)-og atributa. Atribut \(x_{ij}\) mozemo skalirati kao:
-\[
+Drugi pristup je da koristimo \emph{normalizaciju} (\emph{min, maks} skaliranje), kako bismo sveli
+atribute na vrednosti u intervalu \([0, 1]\). Neka je \(\overline{X_i}\) \(i\)-ti slog i neka su
+\(min_j\) i \(max_j\) redom minimalna i maksimalna \(j\)-og atributa. Atribut \(x_{ij}\) mozemo
+skalirati kao:
+\begin{equation}\label{eq:normalizacija}
     z_{ij} = \dfrac{x_{ij} - \min_j}{max_j - min_j}
-\]
+\end{equation}
 Ovaj pristup nije efektivan ukoliko su minimum i maksimum neki ekstremni autlajeri. Zamislimo
 situaciju gde se greskom na broj godina dodala jos jedna nula, pa imamo maksimalni broj godina 800.
 Ovo bi znacilo da ce se svi podaci nalaziti u intervalu \([0, 0.1]\)
